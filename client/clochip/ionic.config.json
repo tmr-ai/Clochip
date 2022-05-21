@@ -1,0 +1,7 @@
+{
+  "name": "clochip",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
