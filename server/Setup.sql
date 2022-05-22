@@ -3,9 +3,11 @@ use eeb;
 
 create table Item(
 	idItem VARCHAR(256) NOT NULL,
+    fidUser VARCHAR(256) NOT NULL,
     tsCreated TIMESTAMP,
     tsChanged TIMESTAMP,
     tsLastRead TIMESTAMP,
+    txtName VARCHAR(64),
     txtDescription VARCHAR(512),
     txtSize VARCHAR(16),
     enumCut ENUM('slim', 'regular', 'loose'),
@@ -14,7 +16,8 @@ create table Item(
     setType SET('T-shirt', 'Shirt', 'Sweatshirt', 'Hoodie', 'Knitwear', 'Jacket', 'Trousers', 'Jeans', 'Coat', 'Suit', 'Tracksuit', 'Shorts', 'Swimwear'),
     enumCondition ENUM('New', 'Like new', 'Worn', 'Well worn', 'Broken'),
     blnDirty BOOLEAN DEFAULT FALSE,
-    constraint primary key(idItem)
+    constraint primary key(idItem),
+    constraint foreign key(fidUser) references User(idUser)
 ) engine=InnoDB default charset latin1;
 
 create table ItemWashingInfo(
@@ -46,7 +49,6 @@ create table User(
     txtUsername VARCHAR(64) NOT NULL,
     txtEmail VARCHAR(256) NOT NULL,
     txtPassword VARCHAR(256) NOT NULL,
-    txtSALT VARCHAR(1024) NOT NULL,
     tsLastLogin TIMESTAMP,
     constraint primary key(idUser)
 ) engine=InnoDB default charset latin1;

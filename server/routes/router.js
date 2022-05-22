@@ -111,3 +111,23 @@ router.post('/register', userMiddleware.validateRegister, (req, res, next) => {
     console.log(req.userData);
     res.send('This is the secret content. Only logged in users can see that!');
   });
+
+
+
+
+
+  router.get('/item/all', (req, res, next) => {
+    db.query(
+      `select * from Item where fidUser = ${db.escape(req.query.idUser)};`,
+      (err, result) => {
+        if (err) {
+          return res.status(400).send({
+            msg: err
+          });
+        } else {
+          res.send(result)
+        }
+    })
+  })
+
+ 

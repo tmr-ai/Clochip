@@ -1,0 +1,87 @@
+<ion-modal #inlineModal [canDismiss]="true" [isOpen]="modalOpen" [breakpoints]="[0.4]" [initialBreakpoint]="0.4" (ionModalDidDismiss)="dismiss($event)">
+  <ng-template>
+    <ion-content>
+      <ion-grid>
+        <!-- Row 1 -->
+        <ion-row>
+          <ion-col>
+            <ion-item lines="none">
+              <ion-label>{{ item.txtName }}</ion-label>
+              <ion-button color="medium" (click)="dismissManually()"><ion-icon name="close-outline"></ion-icon></ion-button>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-avatar >
+                <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+              </ion-avatar>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>Status</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>Washing</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>Name</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>Description</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>Size</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>Color</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label>Material</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        
+
+      </ion-grid>
+      
+    </ion-content>
+  </ng-template>
+</ion-modal>
