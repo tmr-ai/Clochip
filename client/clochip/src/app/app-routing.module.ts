@@ -9,6 +9,10 @@ const routes: Routes = [
   {
     path: 'tab4',
     loadChildren: () => import('./tab-settings/tab-settings.module').then( m => m.TabSettingsPageModule)
+  },
+  {
+    path: 'tab-home',
+    loadChildren: () => import('./tab-home/tab-home.module').then( m => m.TabHomePageModule)
   }
 ];
 @NgModule({

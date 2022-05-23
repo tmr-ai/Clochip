@@ -1,0 +1,45 @@
+<ion-header [translucent]="true" class="ion-no-border">
+    <ion-toolbar >
+      <ion-title>
+        <h1><b>Sarah's</b> CloChip</h1>
+      </ion-title>
+
+      <ion-buttons slot="end">
+        <ion-avatar>
+            <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+        </ion-avatar>
+    </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+
+<ion-content [fullscreen]="true">
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <ion-card routerLink="/tabs/tab-inventory">
+                    <img src="assets/images/home_clothesrack.jpg"/>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-card routerLink="/tabs/tab-washing">
+                    <img src="assets/images/home_laundry.jpg"/>
+                  </ion-card>
+            </ion-col>
+            <ion-col>
+                <ion-card routerLink="/tabs/tab-washing">
+                    <img src="assets/images/home_laundromat.jpg"/>
+                  </ion-card>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-card routerLink="/tabs/tab-favorites">
+                    <img src="assets/images/home_outfits.jpg"/>
+                  </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
