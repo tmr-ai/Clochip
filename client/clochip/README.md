@@ -1,6 +1,6 @@
 ## Run App on your device:
 
-1. Run a single to install the App:
+1. Run a terminal command to install the App:
 
     `npm install`
 
