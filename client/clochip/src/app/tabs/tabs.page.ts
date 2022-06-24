@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Ndef, NFC } from '@awesome-cordova-plugins/nfc/ngx';
 import { Device } from '@capacitor/device';
 import { ActionSheetController, AlertController, LoadingController } from '@ionic/angular';
+import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 
 @Component({
   selector: 'app-tabs',
@@ -12,12 +13,14 @@ export class TabsPage {
   flags = null
   tag = null
   loader = null
-  openCreateModal = false
+  openCreateModal = true
   detected = false
+  photo: any
 
   constructor(
     private nfc: NFC,
     private ndef: Ndef,
+    private actionSheetCtrl: ActionSheetController,
     public alertController: AlertController,
     public loadingController: LoadingController
     ) {
@@ -119,6 +122,28 @@ export class TabsPage {
     return result
   }
 
+  canDismiss = async () => {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Are you sure?',
+      buttons: [
+        {
+          text: 'Yes',
+          role: 'confirm',
+        },
+        {
+          text: 'No',
+          role: 'cancel',
+        },
+      ],
+    });
+
+    actionSheet.present();
+
+    const { role } = await actionSheet.onWillDismiss();
+
+    return role === 'confirm';
+  };
+
 
   async readNfc() {
     const info = await Device.getInfo();
@@ -143,6 +168,7 @@ export class TabsPage {
         alert('Error in starting NFC reader: ' + JSON.stringify(err))
       }).subscribe((res) => {
         if (this.detected) {
+          // if the only tag is detected dont move ahead. removeListener function is removed in this NFC package
           return
         }
         alert(JSON.stringify(res))
@@ -156,13 +182,31 @@ export class TabsPage {
       }, () => {
       });
     } else {
+      this.loader.dismiss()
       alert('NFC support not available')
-      // this.loader.dismiss()
-      // this.tag = {
-      //   id: 2,
-      //   nDefMessage: []
-      // }
-      // this.performOperation()
     }
+  }
+
+  washingDegreeFormatter(value: number) {
+    return `${value}°C`;
+  }
+
+  spinningFormatter(value: number) {
+    switch(value) {
+      case 1: return 0
+      case 2: return 400
+      case 3: return 800
+      case 4: return 1200
+    }
+  }
+
+  async clickPhoto() {
+    this.photo = await Camera.getPhoto({
+      resultType: CameraResultType.Uri,
+      source: CameraSource.Camera,
+      quality: 80,
+      allowEditing: true,
+    });
+    console.log(this.photo)
   }
 }
