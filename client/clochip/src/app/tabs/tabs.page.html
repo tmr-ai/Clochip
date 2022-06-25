@@ -23,9 +23,104 @@
   </ion-tab-bar>
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" class="scanButton">
-    <ion-fab-button (click)="read()">
+    <ion-fab-button (click)="readNfc()">
       <ion-icon name="scan-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
+  <ion-modal
+    [isOpen]="openCreateModal"
+    [canDismiss]="canDismiss"
+  >
+    <ng-template>
+      <ion-content>
+        <ion-text color="primary" class="ion-text-center">
+          <h2>Add new item</h2>
+        </ion-text>
+        <ion-list>
+          <ion-item>
+            <ion-label>Top or Bottom ?</ion-label>
+            <ion-select interface="popover">
+              <ion-select-option value="top" disabled="true">----Top----</ion-select-option>
+              <ion-select-option value="tshirt">T-Shirt</ion-select-option>
+              <ion-select-option value="pullover">Pullover</ion-select-option>
+              <ion-select-option value="jacket">Jacket</ion-select-option>
+              <ion-select-option value="hoodie">Hoodie</ion-select-option>
+              <ion-select-option value="sweatshirt">Sweatshirt</ion-select-option>
+              <ion-select-option value="shirt">Shirt</ion-select-option>
+              <ion-select-option value="bottom" disabled="true">----Bottom----</ion-select-option>
+              <ion-select-option value="jeans">Jeans</ion-select-option>
+              <ion-select-option value="chinos">Chinos</ion-select-option>
+              <ion-select-option value="trousers">Trousers</ion-select-option>
+              <ion-select-option value="shorts">Shorts</ion-select-option>
+              <ion-select-option value="underwear">Underwear</ion-select-option>
+
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Choose its color</ion-label>
+            <input type="color" id="colorpicker" value="#0000ff">
+          </ion-item>
+          <ion-item>
+            <ion-label>Select its size</ion-label>
+            <ion-select interface="popover" placeholder="Size">
+              <ion-select-option value="s">S</ion-select-option>
+              <ion-select-option value="m">M</ion-select-option>
+              <ion-select-option value="l">L</ion-select-option>
+              <ion-select-option value="l">XL</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Select its fit</ion-label>
+            <ion-select interface="popover" placeholder="Fit">
+              <ion-select-option value="slim">Slim</ion-select-option>
+              <ion-select-option value="regular">Regular</ion-select-option>
+              <ion-select-option value="loose">Loose</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>What are the weather conditions ?</ion-label>
+            <ion-select interface="popover" placeholder="Weather Condition">
+              <ion-select-option value="cold">Cold</ion-select-option>
+              <ion-select-option value="warm">Warm</ion-select-option>
+              <ion-select-option value="hot">Hot</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>What is its material ?</ion-label>
+            <ion-select interface="popover" placeholder="Material">
+              <ion-select-option value="leather">Leather</ion-select-option>
+              <ion-select-option value="cotton">Cotton</ion-select-option>
+              <ion-select-option value="polyester">Polyester</ion-select-option>
+              <ion-select-option value="wool">Wool</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Washing Temperature</ion-label><br/>
+            <ion-range [pin]="true" [pinFormatter]="washingDegreeFormatter" [min]="20" [max]="90"></ion-range>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Spinning Cycles</ion-label><br/><br/>
+            <ion-range [ticks]="true" [pin]="true" [snaps]="true" [min]="1" [max]="4" [value]="3" [pinFormatter]="spinningFormatter"></ion-range>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Click a photo</ion-label><br/><br/>
+            <ion-button color="light" (click)="clickPhoto">
+              Click
+            </ion-button>
+            <ion-img *ngIf="photo" :src="photo.webviewPath"></ion-img>
+          </ion-item>
+
+          <ion-item class="ion-align-items-center ion-justify-content-center">
+            <ion-button>
+              Submit
+            </ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 
 </ion-tabs>
