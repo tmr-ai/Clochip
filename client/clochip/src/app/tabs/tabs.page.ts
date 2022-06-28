@@ -13,17 +13,59 @@ export class TabsPage {
   flags = null
   tag = null
   loader = null
-  openCreateModal = true
+  openCreateModal = false
   detected = false
-  photo: any
+  isSubmitted = false
+  currentId = null
+  initialFormInputs = null
+  writeSomeData = null
+
+  formInputs = {
+    topOrBottom: {
+      value: '',
+      error: false
+    },
+    color: {
+      value: '#000',
+      error: false
+    },
+    size: {
+      value: '',
+      error: false
+    },
+    fit: {
+      value: '',
+      error: false
+    },
+    weather: {
+      value: '',
+      error: false
+    },
+    material: {
+      value: '',
+      error: false
+    },
+    temperature: {
+      value: '50',
+      error: false
+    },
+    spinningCycles: {
+      value: '0',
+      error: false
+    },
+    photo: {
+      value: null,
+      error: false
+    }
+  }
 
   constructor(
     private nfc: NFC,
     private ndef: Ndef,
-    private actionSheetCtrl: ActionSheetController,
     public alertController: AlertController,
     public loadingController: LoadingController
     ) {
+      this.initialFormInputs = JSON.parse(JSON.stringify(this.formInputs))
   }
 
   async presentLoading(message) {
@@ -34,6 +76,7 @@ export class TabsPage {
   }
 
   async performOperation() {
+    this.formInputs = JSON.parse(JSON.stringify(this.initialFormInputs))
     // check if payload exist with nDefMessage
     if (
       this.tag.ndefMessage &&
@@ -57,8 +100,8 @@ export class TabsPage {
         alert('Local db count: ' + tags.length.toString())
         var newDetails = {
           id: this.tag.id,
-          status: dirtyOrNotResult,
-          createdAt: new Date().toISOString(),
+          lastScannedAt: new Date().toISOString(),
+          isDirtyBool: dirtyOrNotResult,
         }
         tags.push(newDetails)
         localStorage.setItem('clothes', JSON.stringify(tags))
@@ -67,34 +110,16 @@ export class TabsPage {
     } else {
       alert('Tag is empty!')
       // no payload ask server for new
-      const payload = new Date().getTime()
-      alert('New payload generated: ' + payload.toString())
+      this.currentId = new Date().getTime()
+      alert('New payload generated: ' + this.currentId.toString())
 
       if (this.tag.isWritable) {
-        // now write this info on the tag
-        try {
-          var message = [
-            this.ndef.mimeMediaRecord('text/plain', payload.toString()),
-          ];
-        } catch(e) {
-          alert(JSON.stringify(e))
-        }
-
-        alert('Message created!')
-
-        this.nfc.write(message).then((res) => {
-          // create the form for input (new modal)
-          this.openCreateModal = true
-          alert('New data is written to tag')
-        }).catch((err) => {
-          alert('Issue in writing to NFC')
-        })
+        this.writeSomeData = null
+        this.openCreateModal = true
       } else {
         alert('NFC tag is not writable!')
       }
-
     }
-
   }
 
   async getDirtyOrNot() {
@@ -122,29 +147,6 @@ export class TabsPage {
     return result
   }
 
-  canDismiss = async () => {
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Are you sure?',
-      buttons: [
-        {
-          text: 'Yes',
-          role: 'confirm',
-        },
-        {
-          text: 'No',
-          role: 'cancel',
-        },
-      ],
-    });
-
-    actionSheet.present();
-
-    const { role } = await actionSheet.onWillDismiss();
-
-    return role === 'confirm';
-  };
-
-
   async readNfc() {
     const info = await Device.getInfo();
 
@@ -153,16 +155,6 @@ export class TabsPage {
     await this.presentLoading('Scanning NFC...')
 
     if (info.platform === 'android') {
-      // this.flags = this.nfc.FLAG_READER_NFC_A | this.nfc.FLAG_READER_NFC_V;
-      // this.nfc.readerMode(this.flags).subscribe(
-      //   tag => {
-      //     this.tag = tag
-      //     this.loader.dismiss()
-      //   },
-      //   err => {
-      //     alert(JSON.stringify(err))
-      //     this.loader.dismiss()
-      //   })
       this.nfc.addNdefListener((s) => {
       }, (err) => {
         alert('Error in starting NFC reader: ' + JSON.stringify(err))
@@ -173,9 +165,28 @@ export class TabsPage {
         }
         alert(JSON.stringify(res))
         this.loader.dismiss()
-        this.tag = res.tag
         this.detected = true
-        this.performOperation()
+        if (this.writeSomeData) {
+          this.formInputs = JSON.parse(JSON.stringify(this.initialFormInputs))
+          this.openCreateModal = false
+          alert('starting to write to nfc!')
+          this.nfc.write(this.writeSomeData).then((res) => {
+            // create the form for input (new modal)
+            alert('New data is written to tag')
+          }).catch((err) => {
+            alert('Issue in writing to NFC')
+          }).finally(()=> {
+            alert('Now we are done')
+            this.currentId = null
+            this.formInputs = JSON.parse(JSON.stringify(this.initialFormInputs))
+            this.openCreateModal = false
+            this.writeSomeData = null
+            this.detected = false
+          })
+        } else {
+          this.tag = res.tag
+          this.performOperation()
+        }
       }, (e) => {
         alert('err from subs' + JSON.stringify(e))
         this.loader.dismiss()
@@ -201,12 +212,75 @@ export class TabsPage {
   }
 
   async clickPhoto() {
-    this.photo = await Camera.getPhoto({
+    this.formInputs.photo.value = await Camera.getPhoto({
       resultType: CameraResultType.Uri,
       source: CameraSource.Camera,
       quality: 80,
-      allowEditing: true,
+      allowEditing: false,
     });
-    console.log(this.photo)
+    this.formInputs.photo.error = false
+    console.log(this.formInputs.photo)
+  }
+
+  submitForm() {
+    this.isSubmitted = true;
+    let errorCount = 0
+    for (let key in this.formInputs) {
+      if (this.formInputs[key].value === '' || this.formInputs[key].value === null) {
+        this.formInputs[key].error = true
+        errorCount += 1
+      } else {
+        this.formInputs[key].error = false
+      }
+    }
+    if (errorCount > 0) {
+      alert('Fill required fields')
+      return false
+    }
+
+    console.log(this.formInputs)
+    // get local db
+    var data = []
+    try {
+      data = JSON.parse(localStorage.getItem('data')) || []
+    } catch(e) {
+      data = []
+    }
+
+    var newData = {
+      id: this.currentId,
+      createdAt: new Date().toISOString(),
+      lastScannedAt: new Date().toISOString(),
+      isDirtyBool: null,
+      isFavouriteBool: null
+    }
+
+    for (let key in this.formInputs) {
+      console.log(this.formInputs[key].value)
+      newData[key] = this.formInputs[key].value
+    }
+
+    data.push(newData)
+    localStorage.setItem('data', JSON.stringify(data))
+    alert('Local db updated with new entry: ' + JSON.stringify(newData))
+
+    // now write this info on the tag
+    try {
+      var message = [
+        this.ndef.mimeMediaRecord('text/plain', this.currentId.toString()),
+      ];
+    } catch(e) {
+      alert(JSON.stringify(e))
+    }
+    this.detected = false
+    this.writeSomeData = message
+    this.readNfc()
+
+    return true
+  }
+
+  closeModal() {
+    this.formInputs = JSON.parse(JSON.stringify(this.initialFormInputs))
+    this.openCreateModal = false
   }
 }
