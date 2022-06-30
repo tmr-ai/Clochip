@@ -254,6 +254,8 @@ export class TabsPage {
       source: CameraSource.Camera,
       quality: 80,
       allowEditing: false,
+      width: 75,
+      height: 75
     });
     this.formInputs.photo.error = false
     this.formInputs.photo.value = `data:image/${this.formInputs.photo.value.format};base64,${this.formInputs.photo.value.base64String}`
@@ -304,25 +306,8 @@ export class TabsPage {
 
 
     const item = new Item()
-/*
-    item.blnFavorite = false
-    item.enumWeather = "Warm"
-    item.fidUser =  "0e6f825b-da02-11ec-acec-0050563de962"
-    item.idItem = uuidv4()//"c30db6be-b5ab-4514-ba3d-c7aeabe32d18"
-    item.nmbSpinningCycles = 2
-    item.nmbTemperature = 65
-    item.setColor = ['black']
-    item.setMaterial = ['Cashmere']
-    item.setType = "T-Shirt"
-    item.txtDescription = "Test"
-    item.txtName = "Test"
-    item.txtSetColor = "black"
-    item.txtSetMaterial = "Cashmere"
-    item.txtSetType = ""
-    item.txtSize = "M"
-*/
 
-    if(this.currentId == null) 
+    if(this.currentId == null)
       this.currentId = uuidv4()
 
     item.idItem = this.currentId
