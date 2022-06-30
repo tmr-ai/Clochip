@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  idTestuser: '0e6f825b-da02-11ec-acec-0050563de962'
+  idTestuser: '0e6f825b-da02-11ec-acec-0050563de962',
+  apiUrl: 'https://gabler.tech:3000'
 };
 
 /*

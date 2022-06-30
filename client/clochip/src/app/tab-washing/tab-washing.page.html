@@ -1,11 +1,19 @@
 <ion-toolbar color="light">
   <ion-buttons slot="start">
     <ion-button routerLink="/tabs/tab-home">
-      <ion-icon name="arrow-back-outline"></ion-icon>
-      <ion-label style="margin-left: 5vw">Main Menu</ion-label>
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label style="margin-left: 5vw">Home</ion-label>
     </ion-button>
   </ion-buttons>
-  
+
+  <ion-buttons slot="end" *ngIf="startDetection">
+    <ion-button *ngIf="detectedData.length > 0" fill="outline" slot="end" (click)="showRecommendation()">Recommendation</ion-button>
+
+    <ion-button (click)="startScan()">
+      <ion-icon name="refresh"></ion-icon>
+      <ion-button color="dark">Restart</ion-button>
+    </ion-button>
+  </ion-buttons>
 </ion-toolbar>
 
 
@@ -16,5 +24,22 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab Washing page"></app-explore-container>
+  <div id="container" *ngIf="!startDetection">
+    <strong>{{ name }}</strong>
+    <ion-button (click)="startScan()" color="dark">Start Bulk Scan</ion-button>
+  </div>
+  <div *ngIf="startDetection">
+    <ion-card *ngFor="let card of detectedData">
+      <ion-item>
+        <ion-icon name="pin" slot="start"></ion-icon>
+        <ion-label>{{card.id}}</ion-label>
+      </ion-item>
+    
+      <ion-card-content>
+        created on {{ card.createdAt}}
+        {{getD(card)}}
+      </ion-card-content>
+    </ion-card>
+    
+  </div>
 </ion-content>

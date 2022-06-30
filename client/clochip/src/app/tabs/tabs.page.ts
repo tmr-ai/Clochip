@@ -3,6 +3,10 @@ import { Ndef, NFC } from '@awesome-cordova-plugins/nfc/ngx';
 import { Device } from '@capacitor/device';
 import { ActionSheetController, AlertController, LoadingController } from '@ionic/angular';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
+import { HttpClient } from '@angular/common/http';
+import { v4 as uuidv4 } from 'uuid';
+import { Item } from '../models/item';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-tabs',
@@ -13,7 +17,7 @@ export class TabsPage {
   flags = null
   tag = null
   loader = null
-  openCreateModal = false
+  openCreateModal = true
   detected = false
   isSubmitted = false
   currentId = null
@@ -21,19 +25,32 @@ export class TabsPage {
   writeSomeData = null
 
   formInputs = {
+    name: {
+      value: '',
+      error: false,
+    },
+    description: {
+      value: '',
+      error: false
+    },
     topOrBottom: {
       value: '',
       error: false
     },
     color: {
       value: '#000',
-      error: false
+      error: false,
+      options: ['black', 'brown', 'beige', 'grey', 'white', 'blue', 'petrol', 'green', 'yellow', 'orange', 'red', 'pink', 'gold', 'silver']
     },
     size: {
       value: '',
       error: false
     },
     fit: {
+      value: '',
+      error: false
+    },
+    condition: {
       value: '',
       error: false
     },
@@ -62,6 +79,7 @@ export class TabsPage {
   constructor(
     private nfc: NFC,
     private ndef: Ndef,
+    private http: HttpClient,
     public alertController: AlertController,
     public loadingController: LoadingController
     ) {
@@ -73,6 +91,17 @@ export class TabsPage {
       message,
     });
     await this.loader.present();
+  }
+
+  markAsDirty(id) {
+
+    let tmpObj = { idItem: id }
+    this.http.post(environment.apiUrl + '/markAsDirty', tmpObj).subscribe(data => { })
+  }
+
+  unmarkAsDirty(id) {
+    let tmpObj = { idItem: id }
+    this.http.post(environment.apiUrl + '/unmarkAsDirty', tmpObj).subscribe(data => { })
   }
 
   async performOperation() {
@@ -97,9 +126,16 @@ export class TabsPage {
         } catch(e) {
           tags = []
         }
+        const tagId = this.nfc.bytesToHexString(this.tag.id)
+        // call the api
+        if (dirtyOrNotResult === 'dirty') {
+          this.markAsDirty(tagId)
+        } else {
+          this.unmarkAsDirty(tagId)
+        }
         alert('Local db count: ' + tags.length.toString())
         var newDetails = {
-          id: this.tag.id,
+          id: tagId,
           lastScannedAt: new Date().toISOString(),
           isDirtyBool: dirtyOrNotResult,
         }
@@ -110,7 +146,8 @@ export class TabsPage {
     } else {
       alert('Tag is empty!')
       // no payload ask server for new
-      this.currentId = new Date().getTime()
+      // this.currentId = new Date().getTime()
+      this.currentId = uuidv4()
       alert('New payload generated: ' + this.currentId.toString())
 
       if (this.tag.isWritable) {
@@ -213,12 +250,13 @@ export class TabsPage {
 
   async clickPhoto() {
     this.formInputs.photo.value = await Camera.getPhoto({
-      resultType: CameraResultType.Uri,
+      resultType: CameraResultType.Base64,
       source: CameraSource.Camera,
       quality: 80,
       allowEditing: false,
     });
     this.formInputs.photo.error = false
+    this.formInputs.photo.value = `data:image/${this.formInputs.photo.value.format};base64,${this.formInputs.photo.value.base64String}`
     console.log(this.formInputs.photo)
   }
 
@@ -264,6 +302,61 @@ export class TabsPage {
     localStorage.setItem('data', JSON.stringify(data))
     alert('Local db updated with new entry: ' + JSON.stringify(newData))
 
+
+    const item = new Item()
+
+    item.blnFavorite = false
+    item.enumWeather = "Warm"
+    item.fidUser =  "0e6f825b-da02-11ec-acec-0050563de962"
+    item.idItem = "c30db6be-b5ab-4514-ba3d-c7aeabe32d18"
+    item.nmbSpinningCycles = 2
+    item.nmbTemperature = 65
+    item.setColor = ['black']
+    item.setMaterial = ['Cashmere']
+    item.setType = "T-Shirt"
+    item.txtDescription = "Test"
+    item.txtName = "Test"
+    item.txtSetColor = "black"
+    item.txtSetMaterial = "Cashmere"
+    item.txtSetType = ""
+    item.txtSize = "M"
+
+    //item.idItem = this.currentId
+    //item.tsCreated = newData.createdAt
+    //item.fidUser = environment.idTestuser
+    //item.setColor = [newData['color']]
+    //item.enumCondition = newData['condition']
+    //item.tsChanged = newData.createdAt
+    //item.tsLastRead = newData.createdAt
+    //item.txtName = newData['name']
+    //item.txtDescription = newData['description']
+    //item.txtSize = newData['size']
+    //item.enumCut = newData['fit']
+    //item.setMaterial = [newData['material']]
+    //item.setType = newData['type']
+    //item.txtSetColor = newData['color']
+    //item.txtSetMaterial = newData['material']
+    //item.txtSetType = newData['type']
+    //item.blnDirty = null
+    //item.blnFavorite = null
+    //item.blobImage = this.formInputs.photo.value
+    //item.enumWeather = newData['weather']
+
+    //item.nmbTemperature = newData['temperature']
+    //item.nmbSpinningCycles = newData['spinningCycles']
+
+     console.log(item)
+
+    // now lets push to api
+    this.http
+      .post(environment.apiUrl + '/insertItem', item)
+      .subscribe((response) => {
+        alert(JSON.stringify(response))
+        console.log(response);
+      }, (err) => {
+        alert(JSON.stringify(err))
+        console.log(err)
+      });
     // now write this info on the tag
     try {
       var message = [

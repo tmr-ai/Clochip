@@ -47,6 +47,14 @@
         <form #form="ngForm" novalidate>
           <ion-list>
             <ion-item>
+              <ion-label position="fixed">Name</ion-label>
+              <ion-input [(ngModel)]="formInputs.name.value" name="name"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Description</ion-label>
+              <ion-textarea [(ngModel)]="formInputs.description.value" name="description"></ion-textarea>
+            </ion-item>
+            <ion-item>
               <ion-label [color]="isSubmitted && formInputs.topOrBottom.error ? 'danger':'dark'">Top or Bottom ?</ion-label>
               <ion-select interface="popover" required="required" [(ngModel)]="formInputs.topOrBottom.value" name="topOrBottom">
                 <ion-select-option value="top" disabled="true">----Top----</ion-select-option>
@@ -66,7 +74,9 @@
             </ion-item>
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.color.error ? 'danger':'dark'">Choose its color</ion-label>
-              <input type="color" id="colorpicker" [(ngModel)]="formInputs.color.value" name="color">
+              <ion-select interface="popover" placeholder="Color" [(ngModel)]="formInputs.color.value" name="color">
+                <ion-select-option *ngFor="let col of formInputs.color.options" value="cold">{{col}}</ion-select-option>
+              </ion-select>
             </ion-item>
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.size.error ? 'danger':'dark'">Select its size</ion-label>
@@ -86,6 +96,16 @@
               </ion-select>
             </ion-item>
             <ion-item>
+              <ion-label [color]="isSubmitted && formInputs.condition.error ? 'danger':'dark'">What is its condition ?</ion-label>
+              <ion-select interface="popover" placeholder="Condition" [(ngModel)]="formInputs.condition.value" name="condition">
+                <ion-select-option value="new">New</ion-select-option>
+                <ion-select-option value="likenew">Like New</ion-select-option>
+                <ion-select-option value="worn">Worn</ion-select-option>
+                <ion-select-option value="wellworn">Well Worn</ion-select-option>
+                <ion-select-option value="broken">Broken</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
               <ion-label [color]="isSubmitted && formInputs.weather.error ? 'danger':'dark'">What are the weather conditions ?</ion-label>
               <ion-select interface="popover" placeholder="Weather Condition" [(ngModel)]="formInputs.weather.value" name="weather">
                 <ion-select-option value="cold">Cold</ion-select-option>
@@ -100,24 +120,33 @@
                 <ion-select-option value="cotton">Cotton</ion-select-option>
                 <ion-select-option value="polyester">Polyester</ion-select-option>
                 <ion-select-option value="wool">Wool</ion-select-option>
+                <ion-select-option value="cashmere">Cashmere</ion-select-option>
+                <ion-select-option value="Cord">cord</ion-select-option>
+                <ion-select-option value="denim">Denim</ion-select-option>
+                <ion-select-option value="fleece">Fleece</ion-select-option>
+                <ion-select-option value="leather">Leather</ion-select-option>
+                <ion-select-option value="linen">Linen</ion-select-option>
+                <ion-select-option value="polyester">Polyester</ion-select-option>
+                <ion-select-option value="satin">Satin</ion-select-option>
+                <ion-select-option value="viscose">Viscose</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.temperature.error ? 'danger':'dark'">Washing Temperature</ion-label><br/>
               <ion-range [pin]="true" [pinFormatter]="washingDegreeFormatter" [min]="20" [max]="90" [(ngModel)]="formInputs.temperature.value" name="temperature"></ion-range>
             </ion-item>
-
+  
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.spinningCycles.error ? 'danger':'dark'">Spinning Cycles</ion-label><br/><br/>
               <ion-range [ticks]="true" [pin]="true" [snaps]="true" [min]="1" [max]="4" [value]="3" [pinFormatter]="spinningFormatter" [(ngModel)]="formInputs.spinningCycles.value" name="spinningCycles"></ion-range>
             </ion-item>
-
+  
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.photo.error ? 'danger':'dark'">Click a photo</ion-label><br/><br/>
               <ion-button color="light" (click)="clickPhoto()">
                 {{ formInputs.photo.value ? 'Upload new' : 'Click'}}
               </ion-button>
-              <ion-img *ngIf="formInputs.photo.value" [src]="formInputs.photo.value.webPath"></ion-img>
+              <ion-img *ngIf="formInputs.photo.value" [src]="formInputs.photo.value"></ion-img>
             </ion-item>
           </ion-list>
         </form>
