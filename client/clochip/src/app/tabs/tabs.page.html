@@ -75,7 +75,7 @@
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.color.error ? 'danger':'dark'">Choose its color</ion-label>
               <ion-select interface="popover" placeholder="Color" [(ngModel)]="formInputs.color.value" name="color">
-                <ion-select-option *ngFor="let col of formInputs.color.options" value="cold">{{col}}</ion-select-option>
+                <ion-select-option *ngFor="let col of formInputs.color.options" [ngValue]="col">{{col}}</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item>

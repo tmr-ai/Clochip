@@ -304,11 +304,11 @@ export class TabsPage {
 
 
     const item = new Item()
-
+/*
     item.blnFavorite = false
     item.enumWeather = "Warm"
     item.fidUser =  "0e6f825b-da02-11ec-acec-0050563de962"
-    item.idItem = "c30db6be-b5ab-4514-ba3d-c7aeabe32d18"
+    item.idItem = uuidv4()//"c30db6be-b5ab-4514-ba3d-c7aeabe32d18"
     item.nmbSpinningCycles = 2
     item.nmbTemperature = 65
     item.setColor = ['black']
@@ -320,32 +320,37 @@ export class TabsPage {
     item.txtSetMaterial = "Cashmere"
     item.txtSetType = ""
     item.txtSize = "M"
+*/
 
-    //item.idItem = this.currentId
+    if(this.currentId == null) 
+      this.currentId = uuidv4()
+
+    item.idItem = this.currentId
     //item.tsCreated = newData.createdAt
-    //item.fidUser = environment.idTestuser
-    //item.setColor = [newData['color']]
-    //item.enumCondition = newData['condition']
+    item.fidUser = environment.idTestuser
+    item.setColor = [newData['color']]
+    item.enumCondition = newData['condition']
     //item.tsChanged = newData.createdAt
     //item.tsLastRead = newData.createdAt
-    //item.txtName = newData['name']
-    //item.txtDescription = newData['description']
-    //item.txtSize = newData['size']
-    //item.enumCut = newData['fit']
-    //item.setMaterial = [newData['material']]
-    //item.setType = newData['type']
-    //item.txtSetColor = newData['color']
-    //item.txtSetMaterial = newData['material']
-    //item.txtSetType = newData['type']
-    //item.blnDirty = null
-    //item.blnFavorite = null
-    //item.blobImage = this.formInputs.photo.value
-    //item.enumWeather = newData['weather']
+    item.txtName = newData['name']
+    item.txtDescription = newData['description']
+    item.txtSize = newData['size']
+    item.enumCut = newData['fit']
+    item.setMaterial = [newData['material']]
+    item.setType = newData['type']
+    item.txtSetColor = newData['color']
+    item.txtSetMaterial = newData['material']
+    item.txtSetType = newData['type']
+    item.blnDirty = null
+    item.blnFavorite = null
+    item.blobImage = this.formInputs.photo.value
+    item.enumWeather = newData['weather']
 
-    //item.nmbTemperature = newData['temperature']
-    //item.nmbSpinningCycles = newData['spinningCycles']
+    item.nmbTemperature = newData['temperature']
+    item.nmbSpinningCycles = newData['spinningCycles']
 
-     console.log(item)
+    console.log(newData)
+    console.log(item)
 
     // now lets push to api
     this.http
