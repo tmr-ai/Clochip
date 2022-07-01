@@ -16,6 +16,7 @@ export class TabFavoritesPage implements OnInit{
   // weather variables
   lati: number;
   long: number;
+  weatherPath: String;
   API_KEY = 'ff1bc4683fc7325e9c57e586c20cc03e';
   //API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={" + this.lat + "} }&lon={" + this.lon+ "}&appid={ff1bc4683fc7325e9c57e586c20cc03e}";
   WeatherData: any;
@@ -39,13 +40,6 @@ export class TabFavoritesPage implements OnInit{
   public pants: Item[]
   public shorts: Item[]
   public jacket: Item[]
-
-  public displayShirt: Item[]
-  public displayTshirt: Item[]
-  public displayHoodie: Item[]
-  public displayPants: Item[]
-  public displayShorts: Item[]
-  public displayJacket: Item[]
 
   suggestionList: Item[]
 
@@ -91,10 +85,8 @@ export class TabFavoritesPage implements OnInit{
   //save all weather variables for use and display
   setWeatherData(data) {
     this.WeatherData = data
-    let sunsetTime = new Date(this.WeatherData.sys.sunset * 1000);
-    this.WeatherData.sunset_time = sunsetTime.toLocaleTimeString();
     let currentDate = new Date()
-    this.WeatherData.isDay = (currentDate.getTime() < sunsetTime.getTime());
+    this.WeatherData.localTime = new Date((currentDate.getTime())).toLocaleTimeString();
     //temperature
     this.WeatherData.temp_celcius = (this.WeatherData.main.temp).toFixed(0);
     this.WeatherData.temp_min = (this.WeatherData.main.temp_min).toFixed(0);
@@ -102,21 +94,20 @@ export class TabFavoritesPage implements OnInit{
     this.WeatherData.temp_feels_like = (this.WeatherData.main.feels_like).toFixed(0);
     //windspeed
     this.WeatherData.speed = (this.WeatherData.wind.speed);
-    //weather description
-    this.WeatherData.desc = (this.WeatherData.weather.main);
-    this.WeatherData.description = (this.WeatherData.weather.description);
     //clouds
     this.WeatherData.clouds = (this.WeatherData.clouds.all);
     //sunset
     this.WeatherData.sunset = new Date(this.WeatherData.sys.sunset * 1000).toLocaleTimeString();
     this.WeatherData.sunrise = new Date(this.WeatherData.sys.sunrise * 1000).toLocaleTimeString();
-    //rain
-    //this.WeatherData.rain1h = (this.WeatherData.rain.rain.1h);
-    //this.WeatherData.rain3h = (this.WeatherData.rain.rain.3h);
-    //snow
-    //this.WeatherData.snow1h = (this.WeatherData.snow.snow.1h);
-    //this.WeatherData.snow3h = (this.WeatherData.snow.snow.3h);
+
+    this.WeatherData.isDay = (currentDate.getTime() < this.WeatherData.sunset && currentDate.getTime() >= this.WeatherData.sunrise);
+
+    this.WeatherData.general = (this.WeatherData.weather[0].main);
+    this.WeatherData.description = (this.WeatherData.weather[0].description);
+    
+    this.defineWeatherAndDay()
   }
+
 
    //load inventory
    loadInventory() {
@@ -167,13 +158,8 @@ export class TabFavoritesPage implements OnInit{
 
       console.log("Weather 10-20")
 
-      //this.nmbFilter = "2" //shirt
-      //this.shirt = 
-      this.suggestionList.push((this.suggestion(this.filter("2", data))));
-      console.log("Shirt: " + this.shirt)
-      //this.nmbFilter = "3" //pullover/hoodie
+      this.suggestionList.push(this.suggestion(this.filter("2", data)));
       this.suggestionList.push(this.suggestion(this.filter("3", data)));
-      //this.nmbFilter = "4" //long pants
       this.suggestionList.push(this.suggestion(this.filter("4", data)));
       console.log(this.suggestionList)
     } 
@@ -198,15 +184,34 @@ export class TabFavoritesPage implements OnInit{
 
   //get correct image for weather widget
   defineWeatherAndDay() {
-    //need rain/sun info for that
-  }
 
-  //blobImage
-  //enumWeather
-  //fidItem
-  //fidUser
-  //idItem
-  //setType
+    this.weatherPath = new String
+    var weatherString = "nothing";
+
+    if(this.WeatherData.isDay ==true) {
+      if(this.WeatherData.general == "Clear" && this.WeatherData.clouds < 3) {
+        weatherString = "sun.png";
+      } else if (this.WeatherData.general != "Rain" && this.WeatherData.clouds >= 3 && this.WeatherData.clouds <= 8) {
+        weatherString = "cloudy.png";
+      } else if (this.WeatherData.general != "Rain" && this.WeatherData.clouds > 8 ) {
+        weatherString = "cloud.png";
+      } else if(this.WeatherData.general == "Rain" ) {
+        weatherString = "rain.png";
+      }
+    } else if(this.WeatherData.isDay == false) {
+
+      if(this.WeatherData.general == "Clear") {
+        weatherString = "moon.png";
+      } else if (this.WeatherData.general == "Rain" ) {
+        weatherString = "rain.png";
+      }
+    } else {
+      weatherString = "weatherString Error"
+    }
+
+    this.weatherPath = "../../assets/images/"+weatherString;
+
+  }
 
   // make get request for all items from backend
   getItems(): Observable<Item[]> {
@@ -216,7 +221,6 @@ export class TabFavoritesPage implements OnInit{
 
   //filter the items based on weather condition
   filter(caseNumber, data) {
-    console.log("enter filter")
 
     this.lstInventory = new Array()
 
