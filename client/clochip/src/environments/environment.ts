@@ -4,7 +4,12 @@
 
 export const environment = {
   production: false,
-  idTestuser: '0e6f825b-da02-11ec-acec-0050563de962'
+  idTestuser: '0e6f825b-da02-11ec-acec-0050563de962',
+  weatherApiBaseUrl: 'https://community-open-weather-map.p.rapidapi.com/weather',
+  XRapidAPIHostHeaderName: 'X-RapidAPI-Host',
+  XRapidAPIHostHeaderValue: 'community-open-weather-map.p.rapidapi.com',
+  XRapidAPIKeyHeaderName: 'X-RapidAPI-Key',
+  XRapidAPIKeyHeaderValue: '50ccbe8895mshae9ecac9dbb7a01p1ace57jsn41f0fb6930fd'
 };
 
 /*

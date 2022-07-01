@@ -11,15 +11,30 @@ export class Item {
     enumCut: Cut
     setColor: Set<string>
     setMaterial: Set<string>
-    setType: Set<string>
+    setType: string
+    txtSetColor: string = ''
+    txtSetMaterial: string = ''
+    txtSetType: string = ''
     enumCondition: Condition
     blnDirty: boolean
+    blnFavorite: boolean = false
+    blobImage
+    enumWeather: Weather
+
+    nmbTemperature: number
+    nmbSpinningCycles: number
 }
 
 enum Cut {
     slim = "slim",
     regular = "regular",
     loose = "loose"
+}
+
+enum Weather {
+    Cold = "Cold",
+    Warm = "Warm",
+    Hot = "Hot"
 }
 
 enum Condition {

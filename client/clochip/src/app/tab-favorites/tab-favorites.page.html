@@ -1,21 +1,72 @@
-<ion-toolbar color="light">
-  <ion-buttons slot="start">
-    <ion-button routerLink="/tabs/tab-home">
-      <ion-icon name="arrow-back-outline"></ion-icon>
-      <ion-label style="margin-left: 5vw">Main Menu</ion-label>
-    </ion-button>
-  </ion-buttons>
-  
-  
-</ion-toolbar>
+<ion-header collapse="condense">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" routerLink="/tabs/tab-home"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
 
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
+      <ion-title size="large">Outfit Assist</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+
+
+<ion-content [fullscreen]="true">
+ 
+  <ion-card>
+    <!--<img src="../../assets/images/sun1.jpeg"/>-->
+    <ion-card-header>
+      <ion-card-title class="cardTitle">Today in {{WeatherData.name}}</ion-card-title>
+      <img class="center" src="../../assets/images/sun.png"/>
+      <h2 class="cardTitle">{{WeatherData.temp_celcius}}°</h2>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <img class="icons" src="../../assets/images/cold.png"/> {{WeatherData.temp_min}}°C 
+          </ion-col>
+          <ion-col>
+            <img class="icons" src="../../assets/images/hot.png"/> {{WeatherData.temp_max}}°C
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <img class="icons" src="../../assets/images/humidity.png"/> {{WeatherData.main.humidity}}% 
+          </ion-col>
+          <ion-col>
+            <img class="icons" src="../../assets/images/wind.png"/> {{WeatherData.speed}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <img class="icons" src="../../assets/images/sunrise.png"/> {{WeatherData.sunrise}}
+          </ion-col>
+          <ion-col>
+            <img class="icons" src="../../assets/images/sunset.png"/> {{WeatherData.sunset}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+    </ion-card-content>
+  </ion-card>
+
+  
+
+  <div style="margin-left: 10px">
+    <h1>Maybe you should wear:</h1>
+  </div>
+
+  <ion-card *ngFor="let item of suggestionList">
+    <img [src]="item.blobImage">
+    <ion-card-header>
+      <ion-card-title class="cardTitle">{{item.setType}}</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-button expand="block" class="refreshButton" (click)="refresh()">Sugeest New Outfit</ion-button>
+
 </ion-content>
+
