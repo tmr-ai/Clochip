@@ -17,6 +17,8 @@ export class TabFavoritesPage implements OnInit{
   lati: number;
   long: number;
   weatherPath: String;
+  weatherString: String;
+  displayMessage: String;
   API_KEY = 'ff1bc4683fc7325e9c57e586c20cc03e';
   //API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={" + this.lat + "} }&lon={" + this.lon+ "}&appid={ff1bc4683fc7325e9c57e586c20cc03e}";
   WeatherData: any;
@@ -137,6 +139,11 @@ export class TabFavoritesPage implements OnInit{
 
     console.log("enter selectClothes")
 
+    if(this.WeatherData.general == "Rain") {
+      //this.nmbFilter = "6" //jacket
+      this.suggestionList.push(this.suggestion(this.filter("6", data)));
+      this.displayMessage = "It is raining. Grab a jacket."
+    }
 
     if(this.WeatherData.temp_celcius  < 10) {
 
@@ -151,7 +158,7 @@ export class TabFavoritesPage implements OnInit{
      // this.nmbFilter = "4" //long pants
      this.suggestionList.push(this.suggestion(this.filter("4", data)));
       
-     console.log(this.suggestionList)
+     this.displayMessage = "It's cold out there. Stay warm enough."
     } 
     
     else if (this.WeatherData.temp_celcius >= 10 && this.WeatherData.temp_celcius <= 20) {
@@ -161,7 +168,8 @@ export class TabFavoritesPage implements OnInit{
       this.suggestionList.push(this.suggestion(this.filter("2", data)));
       this.suggestionList.push(this.suggestion(this.filter("3", data)));
       this.suggestionList.push(this.suggestion(this.filter("4", data)));
-      console.log(this.suggestionList)
+      this.displayMessage = "Temperature seems to be pleasant."
+    
     } 
     
     else if (this.WeatherData.temp_celcius > 20) {
@@ -172,7 +180,8 @@ export class TabFavoritesPage implements OnInit{
       this.suggestionList.push(this.tshirt = this.suggestion(this.filter("1", data)));
       //this.nmbFilter = "5" //shorts
       this.suggestionList.push(this.shorts = this.suggestion(this.filter("5", data)));
-      
+      this.displayMessage = "It is warm. Dont't dress too warm."
+
     } else (console.log("selectClothes error"));
 
   }
@@ -186,27 +195,42 @@ export class TabFavoritesPage implements OnInit{
   defineWeatherAndDay() {
 
     this.weatherPath = new String
-    var weatherString = "nothing";
+    var weatherString = "flash.png"
 
     if(this.WeatherData.isDay ==true) {
-      if(this.WeatherData.general == "Clear" && this.WeatherData.clouds < 3) {
+      if(this.WeatherData.general == "Clear") {
         weatherString = "sun.png";
-      } else if (this.WeatherData.general != "Rain" && this.WeatherData.clouds >= 3 && this.WeatherData.clouds <= 8) {
-        weatherString = "cloudy.png";
-      } else if (this.WeatherData.general != "Rain" && this.WeatherData.clouds > 8 ) {
-        weatherString = "cloud.png";
-      } else if(this.WeatherData.general == "Rain" ) {
+      } else if (this.WeatherData.general == "Rain") {
         weatherString = "rain.png";
+      } else if(this.WeatherData.general == "Clouds") {
+        weatherString = "clouds.png";
+      } else if(this.WeatherData.general == "Drizzle") {
+        weatherString = "rain.png";
+      } else if(this.WeatherData.general == "Thunderstorm") {
+        weatherString = "storm-2.png";
+      } else if(this.WeatherData.general == ("Mist" || "Smoke" || "Haze" || "Dust" || "Fog" || "Sand" || "Ash" || "Squall" || "Tornado")) {
+        weatherString = "mist.png";
+      } else {
+        weatherString = "flash.png";
       }
     } else if(this.WeatherData.isDay == false) {
-
       if(this.WeatherData.general == "Clear") {
         weatherString = "moon.png";
-      } else if (this.WeatherData.general == "Rain" ) {
+      } else if (this.WeatherData.general == "Rain") {
         weatherString = "rain.png";
+      } else if(this.WeatherData.general == "Clouds") {
+        weatherString = "clouds.png";
+      } else if(this.WeatherData.general == "Drizzle") {
+        weatherString = "rain.png";
+      } else if(this.WeatherData.general == "Thunderstorm") {
+        weatherString = "storm-2.png";
+      } else if(this.WeatherData.general == ("Mist" || "Smoke" || "Haze" || "Dust" || "Fog" || "Sand" || "Ash" || "Squall" || "Tornado")) {
+        weatherString = "mist.png";
+      } else {
+        weatherString = "flash.png";
       }
     } else {
-      weatherString = "weatherString Error"
+      weatherString = "flash.png";
     }
 
     this.weatherPath = "../../assets/images/"+weatherString;

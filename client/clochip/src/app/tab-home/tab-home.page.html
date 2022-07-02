@@ -1,19 +1,44 @@
-<ion-header [translucent]="true" class="ion-no-border">
-    <ion-toolbar >
-      <ion-title>
-        <h1><b>Sarah's</b> CloChip</h1>
-      </ion-title>
 
-      <ion-buttons slot="end">
-        <ion-avatar>
+<ion-header collapse="condense">
+    <ion-toolbar>
+       
+      </ion-toolbar>
+  
+    <ion-toolbar>
+        <ion-title size="large">Sarah's Clochip</ion-title>
+        <ion-avatar slot="end">
             <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
         </ion-avatar>
-    </ion-buttons>
     </ion-toolbar>
-  </ion-header>
+
+    <ion-buttons slot="end">
+        
+    </ion-buttons>
+</ion-header>
 
 
 <ion-content [fullscreen]="true">
+    <ion-card routerLink="/tabs/tab-inventory">
+        <img class="picture" src="assets/images/inventory.jpeg"/>
+        <div >
+            <h1 class="text"><b>Inventory</b></h1>
+        </div>
+    </ion-card>
+
+    <ion-card routerLink="/tabs/tab-washing">
+        <img class="picture" src="assets/images/wash.jpeg"/>
+        <div >
+            <h1 class="text"><b>Washing Suggestion</b></h1>
+        </div>
+    </ion-card>
+
+    <ion-card routerLink="/tabs/tab-favorites">
+        <img class="picture" src="assets/images/outfit.jpeg"/>
+        <div >
+            <h1 class="text"><b>Outfit Assist</b></h1>
+        </div>
+    </ion-card>
+    <!--
     <ion-grid>
         <ion-row>
             <ion-col>
@@ -42,4 +67,5 @@
             </ion-col>
         </ion-row>
     </ion-grid>
+    -->
 </ion-content>
