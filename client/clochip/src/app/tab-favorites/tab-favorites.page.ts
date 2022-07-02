@@ -194,6 +194,7 @@ export class TabFavoritesPage implements OnInit{
   //get correct image for weather widget
   defineWeatherAndDay() {
 
+    console.log(this.WeatherData)
     this.weatherPath = new String
     var weatherString = "flash.png"
 
@@ -203,7 +204,7 @@ export class TabFavoritesPage implements OnInit{
       } else if (this.WeatherData.general == "Rain") {
         weatherString = "rain.png";
       } else if(this.WeatherData.general == "Clouds") {
-        weatherString = "clouds.png";
+        weatherString = "cloud.png";
       } else if(this.WeatherData.general == "Drizzle") {
         weatherString = "rain.png";
       } else if(this.WeatherData.general == "Thunderstorm") {
@@ -219,7 +220,7 @@ export class TabFavoritesPage implements OnInit{
       } else if (this.WeatherData.general == "Rain") {
         weatherString = "rain.png";
       } else if(this.WeatherData.general == "Clouds") {
-        weatherString = "clouds.png";
+        weatherString = "cloud.png";
       } else if(this.WeatherData.general == "Drizzle") {
         weatherString = "rain.png";
       } else if(this.WeatherData.general == "Thunderstorm") {
