@@ -37,6 +37,18 @@ export class TabWashingPage {
     await this.loader.present();
   }
 
+  // needed to format spinning recommendation
+  spinningFormatter(value: number) {
+    switch(value) {
+      case 0: return 0
+      case 1: return 0
+      case 2: return 400
+      case 3: return 800
+      case 4: return 1200
+    }
+  }
+
+
   async presentAlert() {
     // alert pop up while bulk scanning
     const alertPop = await this.alertController.create({
@@ -93,7 +105,7 @@ export class TabWashingPage {
       notes = 'Attention: You are mixing white clothes with colored ones, maybe use a color catch cloth<br/>'
     }
     // if whool or leather is detected, warn user
-    if (materials.includes('wool') || materials.includes('leather')) {
+    if (materials.includes('Wool') || materials.includes('leather')) {
       notes += 'Attention: You have an delicate item in your laundry, consider hand washing it'
     }
 
@@ -104,7 +116,7 @@ export class TabWashingPage {
 
     this.recommendationMsg = ` \
       Washing Temperature: ${minTemp}°C<br/> \
-      Spinning Cycles: ${minSpinningCycle}<br/> \
+      Spinning Cycles: ${this.spinningFormatter(minSpinningCycle).toString()}<br/> \
       Note: ${notes}\
       `
 
