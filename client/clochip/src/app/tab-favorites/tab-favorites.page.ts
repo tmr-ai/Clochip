@@ -14,26 +14,16 @@ import { Buffer } from 'buffer'
 export class TabFavoritesPage implements OnInit{
 
   // weather variables
-  lati: number;
+  lati: number;           
   long: number;
-  weatherPath: String;
-  weatherString: String;
-  displayMessage: String;
+  weatherPath: String;    //path to weather icon location
+  weatherString: String;  //name of icon
+  displayMessage: String; //message shown to user
   API_KEY = 'ff1bc4683fc7325e9c57e586c20cc03e';
-  //API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={" + this.lat + "} }&lon={" + this.lon+ "}&appid={ff1bc4683fc7325e9c57e586c20cc03e}";
   WeatherData: any;
 
   //inventory variables
   public lstInventory: Item[]
-  lstInventorySave: Item[]
-  lstTshirt: Item[]
-  public lstShirt: Item[]
-  lstHoodie: Item[]
-  lstLongPants: Item[]
-  lstShort: Item[]
-  lstJacket: Item[]
-  chosenItem: Item
-  nmbFilter
 
   //suggestion variables
   public shirt: Item[]
@@ -47,6 +37,7 @@ export class TabFavoritesPage implements OnInit{
 
   constructor(private http:HttpClient) { }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //start on page initiation
   ngOnInit() {
     this.WeatherData = {
@@ -64,6 +55,8 @@ export class TabFavoritesPage implements OnInit{
    this.loadInventory();
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   // get current position
   getPosition(): Observable<any> {
     return Observable.create(observer => {
@@ -75,20 +68,25 @@ export class TabFavoritesPage implements OnInit{
     });
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   //get weather data from api
   getWeatherData(lat, lon) {
-    console.log(this.lati)
     fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&appid=' + this.API_KEY + '&units=metric')
-    //fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + this.lati + '&lon=' + this.long + '&appid=' + this.API_KEY + '&units=metric')
     .then(response=>response.json())
     .then(data=>{this.setWeatherData(data);})
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //save all weather variables for use and display
   setWeatherData(data) {
     this.WeatherData = data
+    //time and date
     let currentDate = new Date()
     this.WeatherData.localTime = new Date((currentDate.getTime())).toLocaleTimeString();
+    this.WeatherData.sunset = new Date(this.WeatherData.sys.sunset * 1000).toLocaleTimeString();
+    this.WeatherData.sunrise = new Date(this.WeatherData.sys.sunrise * 1000).toLocaleTimeString();
+    this.WeatherData.isDay = (this.WeatherData.localTime < this.WeatherData.sunset && this.WeatherData.localTime >= this.WeatherData.sunrise);
     //temperature
     this.WeatherData.temp_celcius = (this.WeatherData.main.temp).toFixed(0);
     this.WeatherData.temp_min = (this.WeatherData.main.temp_min).toFixed(0);
@@ -98,24 +96,21 @@ export class TabFavoritesPage implements OnInit{
     this.WeatherData.speed = (this.WeatherData.wind.speed);
     //clouds
     this.WeatherData.clouds = (this.WeatherData.clouds.all);
-    //sunset
-    this.WeatherData.sunset = new Date(this.WeatherData.sys.sunset * 1000).toLocaleTimeString();
-    this.WeatherData.sunrise = new Date(this.WeatherData.sys.sunrise * 1000).toLocaleTimeString();
-
-    this.WeatherData.isDay = (currentDate.getTime() < this.WeatherData.sunset && currentDate.getTime() >= this.WeatherData.sunrise);
-
+    //weather description
     this.WeatherData.general = (this.WeatherData.weather[0].main);
     this.WeatherData.description = (this.WeatherData.weather[0].description);
     
+    //call function to set weather icon
     this.defineWeatherAndDay()
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   //load inventory
+   //load inventory from server
    loadInventory() {
     this.getItems().subscribe( data => {
       this.lstInventory = data
-      this.lstInventorySave = data
+      // images of clothing pieces
       for(let i of this.lstInventory) {
         if(i.blobImage == null) {
           i.blobImage = "https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y"
@@ -123,82 +118,70 @@ export class TabFavoritesPage implements OnInit{
           i.blobImage = Buffer.from(i.blobImage, 'base64').toString()
         }
       }
-      this.selectClothes(data)
+      this.selectClothes(data) //call function to selects clothes based on weather
     });
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //check weather and filter clothes based on needs
   selectClothes(data) {
 
     this.suggestionList = new Array()
+
     //conditions:
-      //rain: jacket
-      //below 10: jacket + tschirt + pullover/hoodie + pants
+      // rain: jacket
+      // below 10: jacket + tschirt + pullover/hoodie + pants
       // 10 - 20: shirt + pullover + pants
       // 20+ shirt + shorts
 
-    console.log("enter selectClothes")
-
-    if(this.WeatherData.general == "Rain") {
-      //this.nmbFilter = "6" //jacket
-      this.suggestionList.push(this.suggestion(this.filter("6", data)));
+    if(this.WeatherData.general == "Rain") { //always recommend jacket when raining
+      this.suggestionList.push(this.suggestion(this.filter("6", data))); //jacket
       this.displayMessage = "It is raining. Grab a jacket."
     }
 
     if(this.WeatherData.temp_celcius  < 10) {
-
-      console.log("Weather <10")
-
-      //this.nmbFilter = "6" //jacket
-      this.suggestionList.push(this.suggestion(this.filter("6", data)));
-      //this.nmbFilter = "1" //tshirt
-      this.suggestionList.push(this.suggestion(this.filter("1", data)));
-      //this.nmbFilter = "3" //pullover/hoodie
-      this.suggestionList.push(this.suggestion(this.filter("3", data)));
-     // this.nmbFilter = "4" //long pants
-     this.suggestionList.push(this.suggestion(this.filter("4", data)));
-      
-     this.displayMessage = "It's cold out there. Stay warm enough."
+      this.suggestionList.push(this.suggestion(this.filter("6", data))); //jacket
+      this.suggestionList.push(this.suggestion(this.filter("1", data))); //t-shirt
+      this.suggestionList.push(this.suggestion(this.filter("3", data))); //pulllover/hoodie
+      this.suggestionList.push(this.suggestion(this.filter("4", data))); //long pants
+      this.displayMessage = "It's cold out there. Stay warm enough."
     } 
     
     else if (this.WeatherData.temp_celcius >= 10 && this.WeatherData.temp_celcius <= 20) {
-
-      console.log("Weather 10-20")
-
-      this.suggestionList.push(this.suggestion(this.filter("2", data)));
-      this.suggestionList.push(this.suggestion(this.filter("3", data)));
-      this.suggestionList.push(this.suggestion(this.filter("4", data)));
+      this.suggestionList.push(this.suggestion(this.filter("2", data))); //shirt
+      this.suggestionList.push(this.suggestion(this.filter("3", data))); //pullover/hoodie
+      this.suggestionList.push(this.suggestion(this.filter("4", data))); //long pants
       this.displayMessage = "Temperature seems to be pleasant."
     
     } 
     
     else if (this.WeatherData.temp_celcius > 20) {
-
-      console.log("Weather 20+")
-
-      //this.nmbFilter = "1" //tshirt
-      this.suggestionList.push(this.tshirt = this.suggestion(this.filter("1", data)));
-      //this.nmbFilter = "5" //shorts
-      this.suggestionList.push(this.shorts = this.suggestion(this.filter("5", data)));
+      this.suggestionList.push(this.tshirt = this.suggestion(this.filter("1", data))); //tshirt
+      this.suggestionList.push(this.shorts = this.suggestion(this.filter("5", data))); //shorts
       this.displayMessage = "It is warm. Dont't dress too warm."
 
-    } else (console.log("selectClothes error"));
+    } else (console.log("selectClothes error")); // error occured
 
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //select one item from list randomly
   suggestion(data) {
     var selection = data[Math.floor(Math.random()*data.length)]
     return selection;
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   //get correct image for weather widget
   defineWeatherAndDay() {
 
-    console.log(this.WeatherData)
     this.weatherPath = new String
     var weatherString = "flash.png"
 
-    if(this.WeatherData.isDay ==true) {
+    if(this.WeatherData.isDay ==true) { // it is day
       if(this.WeatherData.general == "Clear") {
         weatherString = "sun.png";
       } else if (this.WeatherData.general == "Rain") {
@@ -214,7 +197,7 @@ export class TabFavoritesPage implements OnInit{
       } else {
         weatherString = "flash.png";
       }
-    } else if(this.WeatherData.isDay == false) {
+    } else if(this.WeatherData.isDay == false) { // it is night
       if(this.WeatherData.general == "Clear") {
         weatherString = "moon.png";
       } else if (this.WeatherData.general == "Rain") {
@@ -230,7 +213,7 @@ export class TabFavoritesPage implements OnInit{
       } else {
         weatherString = "flash.png";
       }
-    } else {
+    } else { // if a problem happend, set icon to flash.png
       weatherString = "flash.png";
     }
 
@@ -238,18 +221,23 @@ export class TabFavoritesPage implements OnInit{
 
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   // make get request for all items from backend
   getItems(): Observable<Item[]> {
     console.log("getting items...")
     return this.http.get<Item[]>('https://gabler.tech:3000/itemByUser/withImage?fidUser='+environment.idTestuser)
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   //filter the items based on weather condition
   filter(caseNumber, data) {
 
     this.lstInventory = new Array()
 
-    switch(caseNumber) {
+    switch(caseNumber) { 
+      
       // cases for recommending one piece per category depending on weather
       case "1": // t-shirt
         for(let item of data) {
@@ -284,7 +272,6 @@ export class TabFavoritesPage implements OnInit{
           if(item.setType == 'Shorts')
           this.lstInventory .push(item)
         }
-        console.log("filter Shorts")
         break;   
       
       case "6": // jacket
@@ -295,31 +282,31 @@ export class TabFavoritesPage implements OnInit{
 
       // standard cases giving back pieces belonging to category  
       case "7": //top
-        for(let item of this.lstInventorySave) {
+        for(let item of data) {
           if(item.setType == 'T-Shirt' || item.setType == 'Knitwear' || item.setType == 'Jacket' || item.setType == 'Hoodie' || item.setType=='Sweatshirt' || item.setType == 'Shirt')
           this.lstInventory .push(item)
         }
         break;
       case "8": //bottom
-        for(let item of this.lstInventorySave) {
+        for(let item of data) {
           if(item.setType == 'Jeans' || item.setType == 'Chinos' || item.setType == 'Trousers' || item.setType == 'Shorts')
             this.lstInventory.push(item)
         }
         break;
       case "9": //cold
-        for(let item of this.lstInventorySave) {
+        for(let item of data) {
           if(item.enumWeather == 'Cold')
             this.lstInventory.push(item)
         }
         break; 
       case "10": //warm
-        for(let item of this.lstInventorySave) {
+        for(let item of data) {
           if(item.enumWeather == 'Warm')
             this.lstInventory.push(item)
         }
         break;
       case "11": //hot
-        for(let item of this.lstInventorySave) {
+        for(let item of data) {
           if(item.enumWeather == 'Hot')
             this.lstInventory.push(item)
         }
@@ -331,8 +318,13 @@ export class TabFavoritesPage implements OnInit{
     return this.lstInventory;
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // reload clothes for new suggestion, triggered with reload button
   refresh() {
     this.loadInventory();
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
