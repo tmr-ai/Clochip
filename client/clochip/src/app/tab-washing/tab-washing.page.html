@@ -6,8 +6,7 @@
     </ion-button>
   </ion-buttons>
 
-  <ion-buttons slot="end" *ngIf="startDetection">
-    <ion-button *ngIf="detectedData.length > 0" fill="outline" slot="end" (click)="showRecommendation()">Recommendation</ion-button>
+  <ion-buttons slot="end" *ngIf="detectedData.length > 0">
 
     <ion-button (click)="startScan()">
       <ion-icon name="refresh"></ion-icon>
@@ -24,22 +23,20 @@
     </ion-toolbar>
   </ion-header>
 
-  <div id="container" *ngIf="!startDetection">
+  <div id="container" *ngIf="!startDetection && detectedData.length === 0">
     <strong>{{ name }}</strong>
     <ion-button (click)="startScan()" color="dark">Start Bulk Scan</ion-button>
   </div>
-  <div *ngIf="startDetection">
+  <div>
+    <div style="display: flex; justify-content: center;">
+      <ion-button *ngIf="detectedData.length > 0" fill="outline" slot="end" (click)="showRecommendation()">Recommendation</ion-button>
+    </div>
+
     <ion-card *ngFor="let card of detectedData">
       <ion-item>
-        <ion-icon name="pin" slot="start"></ion-icon>
-        <ion-label>{{card.id}}</ion-label>
+        <ion-label>{{card.txtName}} </ion-label>
       </ion-item>
-    
-      <ion-card-content>
-        created on {{ card.createdAt}}
-        {{getD(card)}}
-      </ion-card-content>
     </ion-card>
-    
+
   </div>
 </ion-content>

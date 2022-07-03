@@ -58,33 +58,32 @@
               <ion-label [color]="isSubmitted && formInputs.topOrBottom.error ? 'danger':'dark'">Top or Bottom ?</ion-label>
               <ion-select interface="popover" required="required" [(ngModel)]="formInputs.topOrBottom.value" name="topOrBottom">
                 <ion-select-option value="top" disabled="true">----Top----</ion-select-option>
-                <ion-select-option value="tshirt">T-Shirt</ion-select-option>
-                <ion-select-option value="pullover">Pullover</ion-select-option>
-                <ion-select-option value="jacket">Jacket</ion-select-option>
-                <ion-select-option value="hoodie">Hoodie</ion-select-option>
-                <ion-select-option value="sweatshirt">Sweatshirt</ion-select-option>
-                <ion-select-option value="shirt">Shirt</ion-select-option>
+                <ion-select-option value="T-shirt">T-Shirt</ion-select-option>
+                <ion-select-option value="Knitwear">Knitwear</ion-select-option>
+                <ion-select-option value="Jacket">Jacket</ion-select-option>
+                <ion-select-option value="Hoodie">Hoodie</ion-select-option>
+                <ion-select-option value="Sweatshirt">Sweatshirt</ion-select-option>
+                <ion-select-option value="Shirt">Shirt</ion-select-option>
                 <ion-select-option value="bottom" disabled="true">----Bottom----</ion-select-option>
-                <ion-select-option value="jeans">Jeans</ion-select-option>
-                <ion-select-option value="chinos">Chinos</ion-select-option>
-                <ion-select-option value="trousers">Trousers</ion-select-option>
-                <ion-select-option value="shorts">Shorts</ion-select-option>
-                <ion-select-option value="underwear">Underwear</ion-select-option>
+                <ion-select-option value="Jeans">Jeans</ion-select-option>
+                <ion-select-option value="Chinos">Chinos</ion-select-option>
+                <ion-select-option value="Trousers">Trousers</ion-select-option>
+                <ion-select-option value="Shorts">Shorts</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.color.error ? 'danger':'dark'">Choose its color</ion-label>
               <ion-select interface="popover" placeholder="Color" [(ngModel)]="formInputs.color.value" name="color">
-                <ion-select-option *ngFor="let col of formInputs.color.options" [ngValue]="col">{{col}}</ion-select-option>
+                <ion-select-option *ngFor="let col of formInputs.color.options" [value]="col">{{col}}</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.size.error ? 'danger':'dark'">Select its size</ion-label>
               <ion-select interface="popover" placeholder="Size" [(ngModel)]="formInputs.size.value" name="size">
-                <ion-select-option value="s">S</ion-select-option>
-                <ion-select-option value="m">M</ion-select-option>
-                <ion-select-option value="l">L</ion-select-option>
-                <ion-select-option value="l">XL</ion-select-option>
+                <ion-select-option value="S">S</ion-select-option>
+                <ion-select-option value="M">M</ion-select-option>
+                <ion-select-option value="L">L</ion-select-option>
+                <ion-select-option value="XL">XL</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item>
@@ -98,49 +97,47 @@
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.condition.error ? 'danger':'dark'">What is its condition ?</ion-label>
               <ion-select interface="popover" placeholder="Condition" [(ngModel)]="formInputs.condition.value" name="condition">
-                <ion-select-option value="new">New</ion-select-option>
-                <ion-select-option value="likenew">Like New</ion-select-option>
-                <ion-select-option value="worn">Worn</ion-select-option>
-                <ion-select-option value="wellworn">Well Worn</ion-select-option>
-                <ion-select-option value="broken">Broken</ion-select-option>
+                <ion-select-option value="New">New</ion-select-option>
+                <ion-select-option value="Like new">Like New</ion-select-option>
+                <ion-select-option value="Worn">Worn</ion-select-option>
+                <ion-select-option value="Well worn">Well Worn</ion-select-option>
+                <ion-select-option value="Broken">Broken</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.weather.error ? 'danger':'dark'">What are the weather conditions ?</ion-label>
               <ion-select interface="popover" placeholder="Weather Condition" [(ngModel)]="formInputs.weather.value" name="weather">
-                <ion-select-option value="cold">Cold</ion-select-option>
-                <ion-select-option value="warm">Warm</ion-select-option>
-                <ion-select-option value="hot">Hot</ion-select-option>
+                <ion-select-option value="Cold">Cold</ion-select-option>
+                <ion-select-option value="Warm">Warm</ion-select-option>
+                <ion-select-option value="Hot">Hot</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.material.error ? 'danger':'dark'">What is its material ?</ion-label>
               <ion-select interface="popover" placeholder="Material" [(ngModel)]="formInputs.material.value" name="material">
-                <ion-select-option value="leather">Leather</ion-select-option>
-                <ion-select-option value="cotton">Cotton</ion-select-option>
-                <ion-select-option value="polyester">Polyester</ion-select-option>
-                <ion-select-option value="wool">Wool</ion-select-option>
-                <ion-select-option value="cashmere">Cashmere</ion-select-option>
-                <ion-select-option value="Cord">cord</ion-select-option>
-                <ion-select-option value="denim">Denim</ion-select-option>
-                <ion-select-option value="fleece">Fleece</ion-select-option>
-                <ion-select-option value="leather">Leather</ion-select-option>
-                <ion-select-option value="linen">Linen</ion-select-option>
-                <ion-select-option value="polyester">Polyester</ion-select-option>
-                <ion-select-option value="satin">Satin</ion-select-option>
-                <ion-select-option value="viscose">Viscose</ion-select-option>
+                <ion-select-option value="Cashmere">Cashmere</ion-select-option>
+                <ion-select-option value="Cord">Cord</ion-select-option>
+                <ion-select-option value="Cotton">Cotton</ion-select-option>
+                <ion-select-option value="Denim">Denim</ion-select-option>
+                <ion-select-option value="Fleece">Fleece</ion-select-option>
+                <ion-select-option value="Leather">Leather</ion-select-option>
+                <ion-select-option value="Linen">Linen</ion-select-option>
+                <ion-select-option value="Polyester">Polyester</ion-select-option>
+                <ion-select-option value="Satin">Satin</ion-select-option>
+                <ion-select-option value="Viscose">Viscose</ion-select-option>
+                <ion-select-option value="Wool">Wool</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.temperature.error ? 'danger':'dark'">Washing Temperature</ion-label><br/>
               <ion-range [pin]="true" [pinFormatter]="washingDegreeFormatter" [min]="20" [max]="90" [(ngModel)]="formInputs.temperature.value" name="temperature"></ion-range>
             </ion-item>
-  
+
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.spinningCycles.error ? 'danger':'dark'">Spinning Cycles</ion-label><br/><br/>
               <ion-range [ticks]="true" [pin]="true" [snaps]="true" [min]="1" [max]="4" [value]="3" [pinFormatter]="spinningFormatter" [(ngModel)]="formInputs.spinningCycles.value" name="spinningCycles"></ion-range>
             </ion-item>
-  
+
             <ion-item>
               <ion-label [color]="isSubmitted && formInputs.photo.error ? 'danger':'dark'">Click a photo</ion-label><br/><br/>
               <ion-button color="light" (click)="clickPhoto()">
