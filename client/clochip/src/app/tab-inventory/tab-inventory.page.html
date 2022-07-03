@@ -6,6 +6,21 @@
     </ion-button>
   </ion-buttons>
   <ion-buttons slot="end">
+    <ion-select interface="popover" placeholder="Filter" [(ngModel)]="nmbFilter" (ionChange)="filter()">
+      <ion-select-option value=0>All</ion-select-option>
+      <ion-select-option value="11">Favorites</ion-select-option>
+      <ion-select-option value="12">Dirty</ion-select-option>
+      <ion-select-option value="13">Clean</ion-select-option>
+      <ion-select-option value="999" disabled>Type</ion-select-option>
+      <ion-select-option value="21">Top</ion-select-option>
+      <ion-select-option value="22">Bottom</ion-select-option>
+      <ion-select-option value="999" disabled>Weather</ion-select-option>
+      <ion-select-option value="31">Cold</ion-select-option>
+      <ion-select-option value="32">Warm</ion-select-option>
+      <ion-select-option value="33">Hot</ion-select-option>
+    </ion-select>
+
+
     <ion-button (click)="refresh()">
       <ion-icon name="refresh-outline"></ion-icon>
     </ion-button>
@@ -14,30 +29,6 @@
 
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-row>
-        <ion-col>
-          <ion-title size="large">Inventory</ion-title>
-        </ion-col>
-        <ion-col>
-          <ion-select interface="popover" placeholder="Filter" [(ngModel)]="nmbFilter" (ionChange)="filter()">
-            <ion-select-option value=0>All</ion-select-option>
-            <ion-select-option value="11">Favorites</ion-select-option>
-            <ion-select-option value="12">Dirty</ion-select-option>
-            <ion-select-option value="13">Clean</ion-select-option>
-            <ion-select-option value="999" disabled>Type</ion-select-option>
-            <ion-select-option value="21">Top</ion-select-option>
-            <ion-select-option value="22">Bottom</ion-select-option>
-            <ion-select-option value="999" disabled>Weather</ion-select-option>
-            <ion-select-option value="31">Cold</ion-select-option>
-            <ion-select-option value="32">Warm</ion-select-option>
-            <ion-select-option value="33">Hot</ion-select-option>
-          </ion-select>
-        </ion-col>
-      </ion-row>
-    </ion-toolbar>
-  </ion-header>
 
   <ion-list *ngFor="let item of lstInventory">
     <ion-item>
