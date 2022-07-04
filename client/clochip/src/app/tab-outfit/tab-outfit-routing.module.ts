@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TabFavoritesPage } from './tab-favorites.page';
+import { TabOutfitPage } from './tab-outfit.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: TabFavoritesPage,
+    component: TabOutfitPage,
   }
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TabFavoritesPageRoutingModule {}
+export class TabOutfitPageRoutingModule {}

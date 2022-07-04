@@ -6,11 +6,11 @@ import { Item } from '../models/item';
 import { Buffer } from 'buffer'
 
 @Component({
-  selector: 'app-tab-favorites',
-  templateUrl: 'tab-favorites.page.html',
-  styleUrls: ['tab-favorites.page.scss']
+  selector: 'app-tab-outfit',
+  templateUrl: 'tab-outfit.page.html',
+  styleUrls: ['tab-outfit.page.scss']
 })
-export class TabFavoritesPage implements OnInit{
+export class TabOutfitPage implements OnInit{
 
   // weather variables
   lati: number;           
@@ -89,7 +89,6 @@ export class TabFavoritesPage implements OnInit{
     this.WeatherData.localTime = new Date((currentDate.getTime())).toLocaleTimeString();
     this.WeatherData.sunset = new Date(this.WeatherData.sys.sunset * 1000).toLocaleTimeString();
     this.WeatherData.sunrise = new Date(this.WeatherData.sys.sunrise * 1000).toLocaleTimeString();
-    console.log(this.WeatherData.sunrise, this.WeatherData.localTime, this.WeatherData.sunset)
     //check if its day or night
     this.WeatherData.isDay = false;
     if(this.WeatherData.localTime >= this.WeatherData.sunrise) {
@@ -123,7 +122,6 @@ export class TabFavoritesPage implements OnInit{
    loadInventory() {
     this.getItems().subscribe( data => {
       this.lstInventory = data
-      console.log(this.lstInventory)
       // images of clothing pieces
       for(let i of this.lstInventory) {
         if(i.blobImage == null) {
@@ -142,7 +140,6 @@ export class TabFavoritesPage implements OnInit{
 
   // make get request for all items from backend
   getItems(): Observable<Item[]> {
-    console.log("getting items...")
     return this.http.get<Item[]>('https://gabler.tech:3000/itemByUser/withImage?fidUser='+environment.idTestuser)
   }
 
