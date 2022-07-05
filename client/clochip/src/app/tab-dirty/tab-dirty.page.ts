@@ -56,7 +56,7 @@ export class TabDirtyPage implements OnInit {
       }
       this.sortList()
       this.lstInventory.forEach(element => {
-        
+
       });
     });
   }
@@ -102,7 +102,7 @@ export class TabDirtyPage implements OnInit {
       spinningCycles.push(itemList[i].nmbSpinningCycles)
       colors.push(itemList[i].setColor)
       materials.push(itemList[i].setMaterial)
-      
+
     }
 
     // now compute min temp and spinning cycle

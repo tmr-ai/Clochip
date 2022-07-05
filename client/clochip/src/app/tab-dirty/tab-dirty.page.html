@@ -3,18 +3,20 @@
     <ion-button routerLink="/tabs/tab-home">
       <ion-icon name="arrow-back-outline"></ion-icon>
       <ion-label style="margin-left: 5vw">Main Menu</ion-label>
-    </ion-button>  
+    </ion-button>
   </ion-buttons>
   <ion-buttons slot="end">
     <ion-button (click)="refresh()">
       <ion-icon name="refresh-outline"></ion-icon>
     </ion-button>
   </ion-buttons>
-  
+
 </ion-toolbar>
 
 <ion-content [fullscreen]="true">
-
+  <div style="display: flex; justify-content: center;">
+  <ion-button (click)="presentAlert()" color="secondary">Get washing information</ion-button>
+  </div>
   <ion-list *ngFor="let item of lstInventory">
     <ion-item>
       <ion-grid>
@@ -35,19 +37,17 @@
           </ion-col>
           <ion-col size="1">
             <ion-icon name="star-outline" *ngIf="!item.blnFavorite" (click)="markAsFavorite(item)"></ion-icon>
-            <ion-icon name="star" *ngIf="item.blnFavorite" (click)="unmarkAsFavorite(item)"></ion-icon>            
+            <ion-icon name="star" *ngIf="item.blnFavorite" (click)="unmarkAsFavorite(item)"></ion-icon>
           </ion-col>
           <ion-col size="1" >
             <ion-icon name="trash-outline" (click)="remove(item)"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>
-      
+
     </ion-item>
   </ion-list>
 
-  <ion-alert-controller></ion-alert-controller>
-  <ion-button (click)="presentAlert()" color="secondary">Get washing information</ion-button>
 
 </ion-content>
 
