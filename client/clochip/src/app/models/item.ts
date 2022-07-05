@@ -1,5 +1,5 @@
 export class Item {
-    
+
     idItem: string
     fidUser: string
     tsCreated: string
@@ -9,8 +9,8 @@ export class Item {
     txtDescription: string
     txtSize: string
     enumCut: Cut
-    setColor: Set<string>
-    setMaterial: Set<string>
+    setColor: [string]
+    setMaterial: [string]
     setType: string
     txtSetColor: string = ''
     txtSetMaterial: string = ''
@@ -19,7 +19,7 @@ export class Item {
     blnDirty: boolean
     blnFavorite: boolean = false
     blobImage
-    enumWeather: Weather
+    enumWeather: string
 
     nmbTemperature: number
     nmbSpinningCycles: number
@@ -31,16 +31,18 @@ enum Cut {
     loose = "loose"
 }
 
-enum Weather {
-    Cold = "Cold",
-    Warm = "Warm",
-    Hot = "Hot"
-}
-
 enum Condition {
     New = "New",
-    LikeNew = "Like new", 
+    LikeNew = "Like new",
     Worn = "Worn",
     WellWorn = "Well worn",
     Broken = "Broken"
 }
+
+
+enum Weather {
+  Cold = "Cold",
+  Warm = "Warm",
+  Hot = "Hot"
+}
+

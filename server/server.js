@@ -10,6 +10,7 @@ const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
 
 const https = require("https");
+const router = require('./routes/router');
 fs = require("fs");
 
 const options = {
@@ -58,50 +59,76 @@ db.connect((err) => {
 });
 
 global.db = db;
-db.connect();
 module.exports = db;
 
+
+//app.listen(port, () => console.log(`Server running on port ${port}`));
 https.createServer(options, app).listen(3000);
 
-
-router.get('/item', (req, res, next) => {
+app.get('/item', (req, res, next) => {
   let query = 'select * from Item;'
   basicQuery(query, req, res)
 })
 
-router.get('/itemByUser', (req, res, next) => {
-  let query = 'select * from Item where fidUser = '+mysql.escape(req.query.fidUser)+';'
+app.get('/item/single', (req, res, next) => {
+  let query = 'select * from Item where idItem '+mysql.escape(req.query.idItem)+';'
   basicQuery(query, req, res)
 })
 
-router.get('/favoritesByUser', (req, res, next) => {
-  let query = 'select * from Item where fidUser = '+mysql.escape(req.query.fidUser)+' and blnFavorite = true;'
+app.get('/itemByUser', (req, res, next) => {
+  let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem where blnActive = true and fidUser = '+mysql.escape(req.query.fidUser)+';'
   basicQuery(query, req, res)
 })
 
-router.post('/markAsDirty', (req, res, next) => {
+app.get('/itemByUser/withImage', (req, res, next) => {
+  let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem left join ItemImage on Item.idItem = ItemImage.fidItem where blnActive = true and fidUser = '+mysql.escape(req.query.fidUser)+';'
+  basicQuery(query, req, res)
+})
+
+app.get('/favoritesByUser', (req, res, next) => {
+  let query = 'select * from Item where fidUser = '+mysql.escape(req.query.fidUser)+' and blnActive = true and blnFavorite = true;'
+  basicQuery(query, req, res)
+})
+
+app.get('/favoritesByUser/withImage', (req, res, next) => {
+  let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem left join ItemImage on Item.idItem = ItemImage.fidItem where blnActive = true and fidUser = '+mysql.escape(req.query.fidUser)+' and blnFavorite = true;'
+  basicQuery(query, req, res)
+})
+
+app.get('/dirtyByUser', (req, res, next) => {
+  let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem where fidUser = '+mysql.escape(req.query.fidUser)+' and blnActive = true and blnDirty = true;'
+  basicQuery(query, req, res)
+})
+
+app.post('/markAsDirty', (req, res, next) => {
   let query = 'update Item set blnDirty = true where idItem = '+mysql.escape(req.body.idItem)+';'
   basicQuery(query, req, res)
 })
 
-router.post('/unmarkAsClean', (req, res, next) => {
+app.post('/unmarkAsDirty', (req, res, next) => {
   let query = 'update Item set blnDirty = false where idItem = '+mysql.escape(req.body.idItem)+';'
   basicQuery(query, req, res)
 })
 
-router.post('/markAsFavorite', (req, res, next) => {
+app.post('/markAsFavorite', (req, res, next) => {
   let query = 'update Item set blnFavorite = true where idItem = '+mysql.escape(req.body.idItem)+';'
   basicQuery(query, req, res)
 })
 
-router.post('/unmarkAsFavorite', (req, res, next) => {
+app.post('/unmarkAsFavorite', (req, res, next) => {
   let query = 'update Item set blnFavorite = false where idItem = '+mysql.escape(req.body.idItem)+';'
   basicQuery(query, req, res)
 })
 
-router.post('/insertItem', (req, res, next) => {
-  let query = 'insert into Item(idItem, fidUser, tsCreated, tsChanged, tsLastRead, txtName, txtDescription, txtSize, enumCut, setColor, setMaterial, setType, enumCondition, blnDirty, blnFavorite) values ('+
-              uuid()+', '+
+app.post('/remove', (req, res, next) => {
+  let query = 'update Item set blnActive = false where idItem = '+mysql.escape(req.body.idItem)+';'
+  basicQuery(query, req, res)
+})
+
+app.post('/insertItem', (req, res, next) => {
+  console.log(req.body)
+  let query = 'insert into Item(idItem, fidUser, tsCreated, tsChanged, tsLastRead, txtName, txtDescription, txtSize, enumCut, setColor, setMaterial, setType, enumCondition, enumWeather, blnDirty, blnFavorite) values ('+              
+              mysql.escape(req.body.idItem)+', '+
               mysql.escape(req.body.fidUser)+', '+
               mysql.escape(req.body.tsCreated)+', '+
               mysql.escape(req.body.tsChanged)+', '+
@@ -110,55 +137,76 @@ router.post('/insertItem', (req, res, next) => {
               mysql.escape(req.body.txtDescription)+', '+
               mysql.escape(req.body.txtSize)+', '+
               mysql.escape(req.body.enumCut)+', '+
-              mysql.escape(req.body.setColor)+', '+
-              mysql.escape(req.body.setMaterial)+', '+
-              mysql.escape(req.body.setType)+', '+
+              mysql.escape(req.body.txtSetColor)+', '+
+              mysql.escape(req.body.txtSetMaterial)+', '+
+              mysql.escape(req.body.txtSetType)+', '+
               mysql.escape(req.body.enumCondition)+', '+
+              mysql.escape(req.body.enumWeather)+', '+
               mysql.escape(req.body.blnDirty)+', '+
               mysql.escape(req.body.blnFavorite)+' '+
               ');'
 
     db.query(query, (err, result) => {
       if (err) {
-        return res.status(400).send({
-          msg: err
-        });
+        console.log(err)
       } else {
-        let id = 0;
-        for (var prop in results[0]) {
-            id = results[0][prop]
-            break;
-        }
-
-        let queryImage = 'insert into ItemImage(fidItem, blobImage) values ('+mysql.escape(id)+', '+mysql.escape(req.body.blobImage)+');'
-        db.query(query, (err, result) => {
+        let queryImage = 'insert into ItemImage(fidItem, blobImage) values ('+mysql.escape(req.body.idItem)+', '+mysql.escape(req.body.blobImage)+');'
+        db.query(queryImage, (err, result) => {
           if(err) {
-            return res.status(400).send({
-              msg:err
-            })
+            console.log(err)
           }
         })
 
         let queryWashingInfo = 'insert into ItemWashingInfo(fidItem, nmbTemperature, nmbSpinningCycles) values ('+
-          mysql.escape(id)+', '+
+          mysql.escape(req.body.idItem)+', '+
           mysql.escape(req.body.nmbTemperature)+', '+
           mysql.escape(req.body.nmbSpinningCycles)+' '+
           ');'
 
-          db.query(query, (err, result) => {
+          db.query(queryWashingInfo, (err, result) => {
             if(err) {
-              return res.status(400).send({
-                msg:err
-              })
+              console.log(err)
             }
           })
       }
   })
 })
 
-basicQuery(query, req, res) {
+app.post('/updateItem', (req, res, next) => {
+    let query = 'update Item set '+
+      'txtName = '+mysql.escape(req.body.txtName)+', '+
+      'txtDescription = '+mysql.escape(req.body.txtName)+', '+
+      'txtSize = '+mysql.escape(req.body.txtName)+', '+
+      'enumCut = '+mysql.escape(req.body.txtName)+', '+
+      'setColor = '+mysql.escape(req.body.txtName)+', '+
+      'setMaterial = '+mysql.escape(req.body.txtName)+', '+
+      'setType = '+mysql.escape(req.body.txtName)+', '+
+      'enumCondition = '+mysql.escape(req.body.txtName)+', '+
+      'enumWeather = '+mysql.escape(req.body.txtName)+' '+
+      'where idItem = '+mysql.escape(req.body.idItem)+';'
+
+    db.query(query, (err, result) => {
+      if(err) {
+        console.log(err)
+      } 
+    })
+
+    let queryWashing = 'update ItemWashingInfo set '+
+      'nmbTemperature = '+mysql.escape(req.body.nmbTemperature)+', '+
+      'nmbSpinningCycles = '+mysql.escape(req.body.nmbSpinningCycles)+' '+
+      'where fidItem = '+mysql.escape(req.body.idItem)+';'
+
+    db.query(queryWashing, (err, result) => {
+      if(err) {
+        console.log(err)
+      } 
+    })
+})
+
+function basicQuery(query, req, res) {
   db.query(query, (err, result) => {
       if (err) {
+        console.log(err)
         return res.status(400).send({
           msg: err
         });
@@ -167,3 +215,5 @@ basicQuery(query, req, res) {
       }
   })
 }
+
+

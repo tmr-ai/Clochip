@@ -1,0 +1,138 @@
+<ion-modal #inlineModal [canDismiss]="true" [isOpen]="modalOpen" [breakpoints]="[0.4, 0.6, 0.8, 1.0]" [initialBreakpoint]="0.6" (ionModalDidDismiss)="dismiss($event)">
+  <ng-template>
+    <ion-content>
+      <ion-grid>
+        <!-- Row 1 -->
+        <ion-row>
+          <ion-col size="3" >
+            <ion-avatar>
+              <!--<img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">-->
+              <img [src]="item.blobImage">
+            </ion-avatar>
+          </ion-col>
+          <ion-col size="6" >
+            <ion-label>{{ item.txtName }} </ion-label><br>
+            <ion-label class="subtitle">{{ item.enumCut }} - Size: {{ item.txtSize }}</ion-label>
+          </ion-col>
+          <ion-col size="1"></ion-col>
+          <ion-col size="2" >
+            <ion-button color="light" (click)="dismissManually()"><ion-icon name="close-outline"></ion-icon></ion-button>
+          </ion-col>
+        </ion-row>
+
+
+        <ion-list>
+          <ion-item>
+            <ion-label>Name</ion-label>
+            <ion-input style="text-align: right" type="text" [value]="item.txtName"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>Description</ion-label>
+            <ion-input style="text-align: right" type="text" [value]="item.txtDescription"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>Type</ion-label>
+            <ion-select interface="popover" [value]="item.setType">
+              <ion-select-option value="top" disabled="true">----Top----</ion-select-option>
+              <ion-select-option value="T-shirt">T-Shirt</ion-select-option>
+              <ion-select-option value="Knitwear">Knitwear</ion-select-option>
+              <ion-select-option value="Jacket">Jacket</ion-select-option>
+              <ion-select-option value="Hoodie">Hoodie</ion-select-option>
+              <ion-select-option value="Sweatshirt">Sweatshirt</ion-select-option>
+              <ion-select-option value="Shirt">Shirt</ion-select-option>
+              <ion-select-option value="bottom" disabled="true">----Bottom----</ion-select-option>
+              <ion-select-option value="Jeans">Jeans</ion-select-option>
+              <ion-select-option value="Chinos">Chinos</ion-select-option>
+              <ion-select-option value="Trousers">Trousers</ion-select-option>
+              <ion-select-option value="Shorts">Shorts</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Color</ion-label>
+            <ion-select multiple interface="popover" [value]="item.setColor">
+              <ion-select-option value="black">black</ion-select-option>
+              <ion-select-option value="brown">brown</ion-select-option>
+              <ion-select-option value="beige">beige</ion-select-option>
+              <ion-select-option value="grey">grey</ion-select-option>
+              <ion-select-option value="white">white</ion-select-option>
+              <ion-select-option value="blue">blue</ion-select-option>
+              <ion-select-option value="petrol">petrol</ion-select-option>
+              <ion-select-option value="green">green</ion-select-option>
+              <ion-select-option value="yellow">yellow</ion-select-option>
+              <ion-select-option value="orange">orange</ion-select-option>
+              <ion-select-option value="red">red</ion-select-option>
+              <ion-select-option value="pink">pink</ion-select-option>
+              <ion-select-option value="gold">gold</ion-select-option>
+              <ion-select-option value="silver">silver</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Size</ion-label>
+            <ion-input style="text-align: right" type="text" [value]="item.txtSize"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>Fit</ion-label>
+            <ion-select interface="popover" placeholder="Fit" [value]="item.enumCut">
+              <ion-select-option value="slim">Slim</ion-select-option>
+              <ion-select-option value="regular">Regular</ion-select-option>
+              <ion-select-option value="loose">Loose</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Condition</ion-label>
+            <ion-select interface="popover" placeholder="Fit" [value]="item.enumCondition">
+              <ion-select-option value="New">New</ion-select-option>
+              <ion-select-option value="Like new">Like new</ion-select-option>
+              <ion-select-option value="Worn">Worn</ion-select-option>
+              <ion-select-option value="Well worn">Well worn</ion-select-option>
+              <ion-select-option value="Broken">Broken</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Weather conditions</ion-label>
+            <ion-select interface="popover" placeholder="Weather Condition" [value]="item.enumWeather">
+              <ion-select-option value="Cold">Cold</ion-select-option>
+              <ion-select-option value="Warm">Warm</ion-select-option>
+              <ion-select-option value="Hot">Hot</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Material</ion-label>
+            <ion-select interface="popover" placeholder="Material" multiple [value]="item.setMaterial">
+              <ion-select-option value="Cashmere">Cashmere</ion-select-option>
+              <ion-select-option value="Cord">Cord</ion-select-option>
+              <ion-select-option value="Cotton">Cotton</ion-select-option>
+              <ion-select-option value="Denim">Denim</ion-select-option>
+              <ion-select-option value="Fleece">Fleece</ion-select-option>
+              <ion-select-option value="Leather">Leather</ion-select-option>
+              <ion-select-option value="Linen">Linen</ion-select-option>
+              <ion-select-option value="Polyester">Polyester</ion-select-option>
+              <ion-select-option value="Satin">Satin</ion-select-option>
+              <ion-select-option value="Viscose">Viscose</ion-select-option>
+              <ion-select-option value="Wool">Wool</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Washing Temperature</ion-label><br/>
+            <ion-range [pin]="true" [pinFormatter]="washingDegreeFormatter" [min]="20" [max]="90" [value]="item.nmbTemperature"></ion-range>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Spinning Cycles</ion-label><br/><br/>
+            <ion-range [ticks]="true" [pin]="true" [snaps]="true" [min]="1" [max]="4" [value]="3" [pinFormatter]="spinningFormatter" [value]="item.nmbSpinningCycles"></ion-range>
+          </ion-item>
+
+
+          <ion-item class="ion-align-items-center ion-justify-content-center">
+            <ion-button color="success" (click)="save(item)">
+              save
+            </ion-button>
+          </ion-item>
+        </ion-list>
+
+      </ion-grid>
+
+    </ion-content>
+  </ng-template>
+</ion-modal>

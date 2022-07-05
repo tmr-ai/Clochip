@@ -3,6 +3,10 @@ import { Ndef, NFC } from '@awesome-cordova-plugins/nfc/ngx';
 import { Device } from '@capacitor/device';
 import { ActionSheetController, AlertController, LoadingController } from '@ionic/angular';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
+import { HttpClient } from '@angular/common/http';
+import { v4 as uuidv4 } from 'uuid';
+import { Item } from '../models/item';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-tabs',
@@ -13,17 +17,73 @@ export class TabsPage {
   flags = null
   tag = null
   loader = null
-  openCreateModal = true
+  openCreateModal = false
   detected = false
-  photo: any
+  isSubmitted = false
+  currentId = null
+  initialFormInputs = null
+  writeSomeData = null
+
+  formInputs = {
+    name: {
+      value: '',
+      error: false,
+    },
+    description: {
+      value: '',
+      error: false
+    },
+    topOrBottom: {
+      value: '',
+      error: false
+    },
+    color: {
+      value: '#000',
+      error: false,
+      options: ['black', 'brown', 'beige', 'grey', 'white', 'blue', 'petrol', 'green', 'yellow', 'orange', 'red', 'pink', 'gold', 'silver']
+    },
+    size: {
+      value: '',
+      error: false
+    },
+    fit: {
+      value: '',
+      error: false
+    },
+    condition: {
+      value: '',
+      error: false
+    },
+    weather: {
+      value: '',
+      error: false
+    },
+    material: {
+      value: '',
+      error: false
+    },
+    temperature: {
+      value: '50',
+      error: false
+    },
+    spinningCycles: {
+      value: '0',
+      error: false
+    },
+    photo: {
+      value: null,
+      error: false
+    }
+  }
 
   constructor(
     private nfc: NFC,
     private ndef: Ndef,
-    private actionSheetCtrl: ActionSheetController,
+    private http: HttpClient,
     public alertController: AlertController,
     public loadingController: LoadingController
     ) {
+      this.initialFormInputs = JSON.parse(JSON.stringify(this.formInputs))
   }
 
   async presentLoading(message) {
@@ -33,74 +93,72 @@ export class TabsPage {
     await this.loader.present();
   }
 
+  markAsDirty(id) {
+  // send id of dirty item to api
+    let tmpObj = { idItem: id }
+    this.http.post(environment.apiUrl + '/markAsDirty', tmpObj).subscribe((response) => {
+        //alert('markAsDirty api -> ' + JSON.stringify(response));
+      }, (err) => {
+        alert('markAsDirty api -> ' + JSON.stringify(err))
+      });
+  }
+
+  unmarkAsDirty(id) {
+  // send id of clean item to api
+
+    let tmpObj = { idItem: id }
+    this.http.post(environment.apiUrl + '/unmarkAsDirty', tmpObj).subscribe((response) => {
+        //alert('unmarkAsDirty api -> ' + JSON.stringify(response));
+      }, (err) => {
+        alert('unmarkAsDirty api -> '  + JSON.stringify(err))
+      });
+  }
+
   async performOperation() {
-    // check if payload exist with nDefMessage
+    this.formInputs = JSON.parse(JSON.stringify(this.initialFormInputs))
+    // check if payload exist (if not tag is empty)
     if (
       this.tag.ndefMessage &&
       this.tag.ndefMessage.length &&
       this.tag.ndefMessage.length > 0 &&
       this.tag.ndefMessage[0].payload
     ) {
-      alert('Payload detected: ' + JSON.stringify(this.tag.ndefMessage[0].payload))
-      // get if its dirty or not
+      alert('Written Tag detected, ID is: ' + JSON.stringify(this.nfc.bytesToString(this.tag.ndefMessage[0].payload)))
+      // ask if its dirty or not
       const dirtyOrNotResult = await this.getDirtyOrNot()
-      console.log(dirtyOrNotResult)
+
       if (dirtyOrNotResult) {
-        alert('Your choice: ' + dirtyOrNotResult)
-        // now store in local database for now (later mysql api)
-        var tags = []
-        try {
-          tags = JSON.parse(localStorage.getItem('clothes')) || []
-        } catch(e) {
-          tags = []
+        //alert('Your choice: ' + dirtyOrNotResult)
+
+        const tagId = this.nfc.bytesToString(this.tag.ndefMessage[0].payload)
+
+        // call the api
+        if (dirtyOrNotResult === 'dirty') {
+          this.markAsDirty(tagId)
+        } else {
+          this.unmarkAsDirty(tagId)
         }
-        alert('Local db count: ' + tags.length.toString())
-        var newDetails = {
-          id: this.tag.id,
-          status: dirtyOrNotResult,
-          createdAt: new Date().toISOString(),
-        }
-        tags.push(newDetails)
-        localStorage.setItem('clothes', JSON.stringify(tags))
-        alert('Local db updated with new entry: ' + JSON.stringify(newDetails))
       }
     } else {
       alert('Tag is empty!')
-      // no payload ask server for new
-      const payload = new Date().getTime()
-      alert('New payload generated: ' + payload.toString())
+      // tag is empty, create new id
+      this.currentId = uuidv4()
+      //alert('New payload generated: ' + this.currentId.toString())
 
       if (this.tag.isWritable) {
-        // now write this info on the tag
-        try {
-          var message = [
-            this.ndef.mimeMediaRecord('text/plain', payload.toString()),
-          ];
-        } catch(e) {
-          alert(JSON.stringify(e))
-        }
-
-        alert('Message created!')
-
-        this.nfc.write(message).then((res) => {
-          // create the form for input (new modal)
-          this.openCreateModal = true
-          alert('New data is written to tag')
-        }).catch((err) => {
-          alert('Issue in writing to NFC')
-        })
+        this.writeSomeData = null
+        this.openCreateModal = true
       } else {
-        alert('NFC tag is not writable!')
+        alert('Error: NFC tag is not writable!')
       }
-
     }
-
   }
 
   async getDirtyOrNot() {
+    // altert pop up, ask user if item is diry or not
     var result = ''
     const alert = await this.alertController.create({
-      header: 'Is it dirty ?',
+      header: 'Is item dirty ?',
       buttons: [
         {
           text: 'Yes',
@@ -122,68 +180,59 @@ export class TabsPage {
     return result
   }
 
-  canDismiss = async () => {
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Are you sure?',
-      buttons: [
-        {
-          text: 'Yes',
-          role: 'confirm',
-        },
-        {
-          text: 'No',
-          role: 'cancel',
-        },
-      ],
-    });
-
-    actionSheet.present();
-
-    const { role } = await actionSheet.onWillDismiss();
-
-    return role === 'confirm';
-  };
-
-
   async readNfc() {
     const info = await Device.getInfo();
 
     this.detected = false
 
+    // store data as initial form. Have you JSON to use new object reference
+    this.formInputs = JSON.parse(JSON.stringify(this.initialFormInputs))
+
     await this.presentLoading('Scanning NFC...')
 
     if (info.platform === 'android') {
-      // this.flags = this.nfc.FLAG_READER_NFC_A | this.nfc.FLAG_READER_NFC_V;
-      // this.nfc.readerMode(this.flags).subscribe(
-      //   tag => {
-      //     this.tag = tag
-      //     this.loader.dismiss()
-      //   },
-      //   err => {
-      //     alert(JSON.stringify(err))
-      //     this.loader.dismiss()
-      //   })
       this.nfc.addNdefListener((s) => {
       }, (err) => {
         alert('Error in starting NFC reader: ' + JSON.stringify(err))
       }).subscribe((res) => {
         if (this.detected) {
-          // if the only tag is detected dont move ahead. removeListener function is removed in this NFC package
+          //removeListener function is removed in this NFC package
           return
         }
-        alert(JSON.stringify(res))
+        //alert(JSON.stringify(res))
+
         this.loader.dismiss()
-        this.tag = res.tag
         this.detected = true
-        this.performOperation()
+
+        if (this.writeSomeData) {
+          this.openCreateModal = false
+          alert('Starting to write to nfc!')
+          this.nfc.write(this.writeSomeData).then((res) => {
+            // create the form for new item input (new modal)
+            //alert('New data is written to tag')
+          }).catch((err) => {
+            alert('Issue in writing to NFC')
+          }).finally(()=> {
+            alert('Writing was sucessful')
+
+            // make all variables as initial state form
+            this.currentId = null
+            this.openCreateModal = false
+            this.writeSomeData = null
+            this.detected = false
+          })
+        } else {
+          this.tag = res.tag
+          this.performOperation()
+        }
       }, (e) => {
-        alert('err from subs' + JSON.stringify(e))
+        alert('Error from subs' + JSON.stringify(e))
         this.loader.dismiss()
       }, () => {
       });
     } else {
       this.loader.dismiss()
-      alert('NFC support not available')
+      alert('NFC support not available, use phone')
     }
   }
 
@@ -201,12 +250,106 @@ export class TabsPage {
   }
 
   async clickPhoto() {
-    this.photo = await Camera.getPhoto({
-      resultType: CameraResultType.Uri,
+    // use camere to make image
+    this.formInputs.photo.value = await Camera.getPhoto({
+      resultType: CameraResultType.Base64,
       source: CameraSource.Camera,
       quality: 80,
-      allowEditing: true,
+      allowEditing: false,
+      width: 150,
+      height: 150
     });
-    console.log(this.photo)
+    this.formInputs.photo.error = false
+    this.formInputs.photo.value = `data:image/${this.formInputs.photo.value.format};base64,${this.formInputs.photo.value.base64String}`
+  }
+
+  submitForm() {
+    // transform form to item than submit it to api
+    this.isSubmitted = true;
+    let errorCount = 0
+    for (let key in this.formInputs) {
+      if (this.formInputs[key].value === '' || this.formInputs[key].value === null) {
+        this.formInputs[key].error = true
+        errorCount += 1
+      } else {
+        this.formInputs[key].error = false
+      }
+    }
+    if (errorCount > 0) {
+      alert('Fill all required fields')
+      return false
+    }
+
+    var newData = {
+      id: this.currentId,
+      createdAt: new Date().toISOString(),
+      lastScannedAt: new Date().toISOString(),
+      isDirtyBool: null,
+      isFavouriteBool: null
+    }
+
+    for (let key in this.formInputs) {
+      newData[key] = this.formInputs[key].value
+    }
+
+    const item = new Item()
+
+    item.idItem = this.currentId
+    //item.tsCreated = newData.createdAt
+    item.fidUser = environment.idTestuser
+    item.setColor = [newData['color']]
+    item.enumCondition = newData['condition']
+    //item.tsChanged = newData.createdAt
+    //item.tsLastRead = newData.createdAt
+    item.txtName = newData['name']
+    item.txtDescription = newData['description']
+    item.txtSize = newData['size']
+    item.enumCut = newData['fit']
+    item.setMaterial = [newData['material']]
+    item.setType = newData['topOrBottom']
+    item.txtSetColor = newData['color']
+    item.txtSetMaterial = newData['material']
+    item.txtSetType = newData['topOrBottom']
+    item.blnDirty = false
+    item.blnFavorite = false
+    item.blobImage = this.formInputs.photo.value
+    item.enumWeather = newData['weather']
+
+    item.nmbTemperature = newData['temperature']
+    item.nmbSpinningCycles = newData['spinningCycles']
+
+    // now lets push to api
+    //alert('item looks like ' + JSON.stringify(item))
+
+    // store new item in backend
+    this.http
+      .post(environment.apiUrl + '/insertItem', item)
+      .subscribe((response) => {
+        //alert(JSON.stringify(response))
+        console.log(response);
+      }, (err) => {
+        alert(JSON.stringify(err))
+        console.log(err)
+      });
+
+    // now write the info/uuid to tag
+    try {
+      var message = [
+        this.ndef.mimeMediaRecord('text/plain', this.currentId.toString()),
+      ];
+    } catch(e) {
+      //alert(JSON.stringify(e))
+    }
+    this.detected = false
+    this.writeSomeData = message
+    this.readNfc()
+
+    return true
+  }
+
+  closeModal() {
+    // close form
+    this.formInputs = JSON.parse(JSON.stringify(this.initialFormInputs))
+    this.openCreateModal = false
   }
 }

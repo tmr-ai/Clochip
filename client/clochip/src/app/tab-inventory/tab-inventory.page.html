@@ -5,31 +5,55 @@
       <ion-label style="margin-left: 5vw">Main Menu</ion-label>
     </ion-button>
   </ion-buttons>
+  <ion-buttons slot="end">
+    <ion-select interface="popover" placeholder="Filter" [(ngModel)]="nmbFilter" (ionChange)="filter()">
+      <ion-select-option value=0>All</ion-select-option>
+      <ion-select-option value="11">Favorites</ion-select-option>
+      <ion-select-option value="12">Dirty</ion-select-option>
+      <ion-select-option value="13">Clean</ion-select-option>
+      <ion-select-option value="999" disabled>Type</ion-select-option>
+      <ion-select-option value="21">Top</ion-select-option>
+      <ion-select-option value="22">Bottom</ion-select-option>
+      <ion-select-option value="999" disabled>Weather</ion-select-option>
+      <ion-select-option value="31">Cold</ion-select-option>
+      <ion-select-option value="32">Warm</ion-select-option>
+      <ion-select-option value="33">Hot</ion-select-option>
+    </ion-select>
+
+
+    <ion-button (click)="refresh()">
+      <ion-icon name="refresh-outline"></ion-icon>
+    </ion-button>
+  </ion-buttons>
 </ion-toolbar>
 
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
   <ion-list *ngFor="let item of lstInventory">
-    <ion-item (click)="openModal(item)">
+    <ion-item>
       <ion-grid>
         <ion-row>
-          <ion-col size="3">
+          <ion-col size="3" (click)="openModal(item)">
             <ion-avatar>
-              <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+              <!--<img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">-->
+              <img [src]="item.blobImage">-
             </ion-avatar>
           </ion-col>
-          <ion-col size="6">
+          <ion-col size="6" (click)="openModal(item)">
             <ion-label>{{ item.txtName }} </ion-label>
             <ion-label class="subtitle">{{ item.enumCut }} - Size: {{ item.txtSize }}</ion-label>
           </ion-col>
-          <ion-col size="3">
-
+          <ion-col size="1">
+            <ion-icon name="shirt-outline" (click)="markAsDirty(item)" *ngIf="!item.blnDirty"></ion-icon>
+            <ion-icon name="shirt" (click)="unmarkAsDirty(item)" *ngIf="item.blnDirty"></ion-icon>
+          </ion-col>
+          <ion-col size="1">
+            <ion-icon name="star-outline" *ngIf="!item.blnFavorite" (click)="markAsFavorite(item)"></ion-icon>
+            <ion-icon name="star" *ngIf="item.blnFavorite" (click)="unmarkAsFavorite(item)"></ion-icon>            
+          </ion-col>
+          <ion-col size="1" >
+            <ion-icon name="trash-outline" (click)="remove(item)"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>

@@ -5,6 +5,9 @@ import { FormsModule } from '@angular/forms';
 
 import { TabsPageRoutingModule } from './tabs-routing.module';
 
+import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
+
+
 import { TabsPage } from './tabs.page';
 
 @NgModule({
@@ -16,4 +19,7 @@ import { TabsPage } from './tabs.page';
   ],
   declarations: [TabsPage]
 })
-export class TabsPageModule {}
+export class TabsPageModule {
+  [x: string]: any;
+  constructor() { }
+}
