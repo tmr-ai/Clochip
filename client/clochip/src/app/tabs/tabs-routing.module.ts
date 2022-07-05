@@ -20,8 +20,8 @@ const routes: Routes = [
         loadChildren: () => import('../tab-inventory/tab-inventory.module').then(m => m.TabInventoryPageModule)
       },
       {
-        path: 'tab-setting',
-        loadChildren: () => import('../tab-settings/tab-settings.module').then(m => m.TabSettingsPageModule)
+        path: 'tab-dirty',
+        loadChildren: () => import('../tab-dirty/tab-dirty.module').then(m => m.TabDirtyPageModule)
       },
       {
         path: 'tab-home',
