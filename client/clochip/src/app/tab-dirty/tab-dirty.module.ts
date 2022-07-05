@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { TabSettingsPageRoutingModule } from './tab-settings-routing.module';
+import { TabDirtyPageRoutingModule } from './tab-dirty-routing.module';
 
-import { TabSettingsPage } from './tab-settings.page';
+import { TabDirtyPage } from './tab-dirty.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TabSettingsPageRoutingModule
+    TabDirtyPageRoutingModule
   ],
-  declarations: [TabSettingsPage]
+  declarations: [TabDirtyPage]
 })
-export class TabSettingsPageModule {}
+export class TabDirtyPageModule {}

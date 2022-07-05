@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: 'tab4',
-    loadChildren: () => import('./tab-settings/tab-settings.module').then( m => m.TabSettingsPageModule)
+    loadChildren: () => import('./tab-dirty/tab-dirty.module').then( m => m.TabDirtyPageModule)
   },
   {
     path: 'tab-home',
