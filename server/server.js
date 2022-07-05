@@ -13,13 +13,16 @@ const https = require("https");
 const router = require('./routes/router');
 fs = require("fs");
 
+/*
+  internal server configuration
+
+  letsencrypt for https usage
+  https is needed for Android and overall just commonly used nowadays
+*/
 const options = {
   key: fs.readFileSync("/etc/letsencrypt/live/gabler.tech/privkey.pem"),
   cert: fs.readFileSync("/etc/letsencrypt/live/gabler.tech/fullchain.pem"),
 };
-
-const hostname = 'gabler.tech';
-const port = 3000;
 
 app.use(helmet());
 app.use(bodyParser.urlencoded({     
@@ -43,6 +46,7 @@ app.use(function(req, res, next) {
 });
 
 
+/*  database configuration and credentials  */
 const db = mysql.createConnection ({
     host: 'localhost',
     user: 'eeb',
@@ -62,69 +66,118 @@ global.db = db;
 module.exports = db;
 
 
-//app.listen(port, () => console.log(`Server running on port ${port}`));
+/*  run server on gabler.tech, listening on port 3000   */
 https.createServer(options, app).listen(3000);
 
+/*  function mostly for test use 
+    return - Item (without washing info and image), not filtered for user     
+*/ 
 app.get('/item', (req, res, next) => {
   let query = 'select * from Item;'
   basicQuery(query, req, res)
 })
 
+/*  
+    return - single item by ID (with washing info and image), no additional check for user 
+*/ 
 app.get('/item/single', (req, res, next) => {
-  let query = 'select * from Item where idItem '+mysql.escape(req.query.idItem)+';'
+  let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem left join ItemImage on Item.idItem = ItemImage.fidItem where idItem ='+mysql.escape(req.query.idItem)+';'
   basicQuery(query, req, res)
 })
 
+/*
+    return - all items (without image), filtered by user
+*/
 app.get('/itemByUser', (req, res, next) => {
   let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem where blnActive = true and fidUser = '+mysql.escape(req.query.fidUser)+';'
   basicQuery(query, req, res)
 })
 
+/*
+    return - all items (with image), filtered by user
+*/
 app.get('/itemByUser/withImage', (req, res, next) => {
   let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem left join ItemImage on Item.idItem = ItemImage.fidItem where blnActive = true and fidUser = '+mysql.escape(req.query.fidUser)+';'
   basicQuery(query, req, res)
 })
 
+/*
+    return - all items marked as favorite (without image), filtered by user
+*/
 app.get('/favoritesByUser', (req, res, next) => {
-  let query = 'select * from Item where fidUser = '+mysql.escape(req.query.fidUser)+' and blnActive = true and blnFavorite = true;'
+  let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem where fidUser = '+mysql.escape(req.query.fidUser)+' and blnActive = true and blnFavorite = true;'
   basicQuery(query, req, res)
 })
 
+/*
+    return - all items marked as favorite (with image), filtered by user
+*/
 app.get('/favoritesByUser/withImage', (req, res, next) => {
   let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem left join ItemImage on Item.idItem = ItemImage.fidItem where blnActive = true and fidUser = '+mysql.escape(req.query.fidUser)+' and blnFavorite = true;'
   basicQuery(query, req, res)
 })
 
+/*
+    return - all items marked as dirty (without image), filtered by user
+*/
 app.get('/dirtyByUser', (req, res, next) => {
   let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem where fidUser = '+mysql.escape(req.query.fidUser)+' and blnActive = true and blnDirty = true;'
   basicQuery(query, req, res)
 })
 
+/*
+    return - all items marked as dirty (with image), filtered by user
+*/
+app.get('/dirtyByUser/withImage', (req, res, next) => {
+  let query = 'select * from Item left join ItemWashingInfo on Item.idItem = ItemWashingInfo.fidItem left join ItemImage on Item.idItem = ItemImage.fidItem where fidUser = '+mysql.escape(req.query.fidUser)+' and blnActive = true and blnDirty = true;'
+  basicQuery(query, req, res)
+})
+
+/*
+    mark items as dirty, single item identified by ID
+*/
 app.post('/markAsDirty', (req, res, next) => {
   let query = 'update Item set blnDirty = true where idItem = '+mysql.escape(req.body.idItem)+';'
   basicQuery(query, req, res)
 })
 
+/*
+    unmark items as dirty, single item identified by ID
+*/
 app.post('/unmarkAsDirty', (req, res, next) => {
   let query = 'update Item set blnDirty = false where idItem = '+mysql.escape(req.body.idItem)+';'
   basicQuery(query, req, res)
 })
 
+/*
+    mark items as favorite, single item identified by ID
+*/
 app.post('/markAsFavorite', (req, res, next) => {
   let query = 'update Item set blnFavorite = true where idItem = '+mysql.escape(req.body.idItem)+';'
   basicQuery(query, req, res)
 })
 
+/*
+    unmark items as favorite, single item identified by ID
+*/
 app.post('/unmarkAsFavorite', (req, res, next) => {
   let query = 'update Item set blnFavorite = false where idItem = '+mysql.escape(req.body.idItem)+';'
   basicQuery(query, req, res)
 })
 
+
+/*
+    remove items - disable items with a tag
+*/
 app.post('/remove', (req, res, next) => {
   let query = 'update Item set blnActive = false where idItem = '+mysql.escape(req.body.idItem)+';'
   basicQuery(query, req, res)
 })
 
+
+/*
+    insert - full insert only with Item, WashingInfo, Image
+*/
 app.post('/insertItem', (req, res, next) => {
   console.log(req.body)
   let query = 'insert into Item(idItem, fidUser, tsCreated, tsChanged, tsLastRead, txtName, txtDescription, txtSize, enumCut, setColor, setMaterial, setType, enumCondition, enumWeather, blnDirty, blnFavorite) values ('+              
@@ -172,6 +225,9 @@ app.post('/insertItem', (req, res, next) => {
   })
 })
 
+/*
+    update - all possible information
+*/
 app.post('/updateItem', (req, res, next) => {
     let query = 'update Item set '+
       'txtName = '+mysql.escape(req.body.txtName)+', '+
