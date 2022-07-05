@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -10,7 +10,7 @@ import { Buffer } from 'buffer'
   templateUrl: 'tab-outfit.page.html',
   styleUrls: ['tab-outfit.page.scss']
 })
-export class TabOutfitPage implements OnInit{
+export class TabOutfitPage implements OnInit, AfterViewInit{
 
   // weather variables
   lati: number;
@@ -58,6 +58,10 @@ export class TabOutfitPage implements OnInit{
    });
 
    this.loadInventory(); //get inventory
+  }
+
+  ngAfterViewInit() {
+    this.refresh()
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
