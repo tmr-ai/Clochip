@@ -13,7 +13,7 @@ const routes: Routes = [
       },
       {
         path: 'tab-favorites',
-        loadChildren: () => import('../tab-favorites/tab-favorites.module').then(m => m.TabFavoritesPageModule)
+        loadChildren: () => import('../tab-outfit/tab-outfit.module').then(m => m.TabOutfitPageModule)
       },
       {
         path: 'tab-inventory',

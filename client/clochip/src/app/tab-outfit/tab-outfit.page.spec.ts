@@ -2,19 +2,19 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
-import { TabFavoritesPage } from './tab-favorites.page';
+import { TabOutfitPage } from './tab-outfit.page';
 
 describe('TabFavoritesPage', () => {
-  let component: TabFavoritesPage;
-  let fixture: ComponentFixture<TabFavoritesPage>;
+  let component: TabOutfitPage;
+  let fixture: ComponentFixture<TabOutfitPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TabFavoritesPage],
+      declarations: [TabOutfitPage],
       imports: [IonicModule.forRoot(), ExploreContainerComponentModule]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TabFavoritesPage);
+    fixture = TestBed.createComponent(TabOutfitPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

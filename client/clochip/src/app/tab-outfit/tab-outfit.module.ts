@@ -3,10 +3,10 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TabFavoritesPage } from './tab-favorites.page';
+import { TabOutfitPage } from './tab-outfit.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
-import { TabFavoritesPageRoutingModule } from './tab-favorites-routing.module';
+import { TabOutfitPageRoutingModule } from './tab-outfit-routing.module';
 
 @NgModule({
   imports: [
@@ -14,8 +14,8 @@ import { TabFavoritesPageRoutingModule } from './tab-favorites-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    TabFavoritesPageRoutingModule
+    TabOutfitPageRoutingModule
   ],
-  declarations: [TabFavoritesPage]
+  declarations: [TabOutfitPage]
 })
-export class TabFavoritesPageModule {}
+export class TabOutfitPageModule {}

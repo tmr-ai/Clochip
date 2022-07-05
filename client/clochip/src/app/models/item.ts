@@ -45,3 +45,4 @@ enum Weather {
   Warm = "Warm",
   Hot = "Hot"
 }
+

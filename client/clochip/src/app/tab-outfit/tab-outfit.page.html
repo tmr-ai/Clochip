@@ -1,0 +1,136 @@
+<!--Header-->
+<ion-header collapse="fade" [translucent]="true">
+<!--<<ion-header collapse="condense">-->
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" routerLink="/tabs/tab-home"></ion-back-button>
+    </ion-buttons>
+  
+    <!--Up Right Button to select new Location-->
+    <img id="click-trigger" class="changeIcon" src="../../assets/images/menu-3.png"/>
+
+    <ion-popover trigger="click-trigger" triggerAction="click">
+      <ng-template>
+        <ion-content class="ion-padding">
+          <!--select location-->
+          <ion-item>
+            <ion-label>Latitude</ion-label>
+            <ion-input [(ngModel)]="latitude"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>Longitute</ion-label>
+            <ion-input [(ngModel)]="longitude"></ion-input>
+          </ion-item>
+          <!--select time-->
+          <ion-item>
+            <ion-label>Time</ion-label>
+            <ion-input [(ngModel)]="time"></ion-input>
+          </ion-item>
+          <!--Button sets new location and time-->
+          <div class="okbutton" ><ion-button (click)="changeLocationDemo()">OK</ion-button></div>
+        </ion-content>
+      </ng-template>
+    </ion-popover>
+  </ion-toolbar>
+
+    <ion-toolbar>
+      <ion-title size="large">Outfit Assist</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+<!--page content-->
+<ion-content [fullscreen]="true">
+ 
+  <!--weather widget-->
+  <ion-card>
+     <!--Top Components-->
+    <ion-card-header>
+      <ion-card-title class="cardTitle">Today in {{WeatherData.name}}</ion-card-title>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <img class="center" src={{weatherPath}}/>
+            </ion-col>
+            <ion-col>
+              <h2 class="temp">{{WeatherData.temp_celcius}}°</h2>
+              <h3 class="description">{{WeatherData.description}}</h3>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+    </ion-card-header>
+  
+     <!--smaller components-->
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col >
+            <img class="icons" src="../../assets/images/cold.png"/> 
+          </ion-col>
+          <ion-col>
+            {{WeatherData.temp_min}}°C 
+          </ion-col>
+          <ion-col>
+            <img class="icons" src="../../assets/images/hot.png"/> 
+          </ion-col>
+          <ion-col>
+            {{WeatherData.temp_max}}°C
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <img class="icons" src="../../assets/images/humidity.png"/> 
+          </ion-col>
+          <ion-col>
+            {{WeatherData.main.humidity}}% 
+          </ion-col>
+          <ion-col>
+            <img class="icons" src="../../assets/images/wind.png"/> 
+          </ion-col>
+          <ion-col>
+            {{WeatherData.speed}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <img class="icons" src="../../assets/images/sunrise.png"/> 
+          </ion-col>
+          <ion-col>
+            {{WeatherData.sunrise}}
+          </ion-col>
+          <ion-col>
+            <img class="icons" src="../../assets/images/sunset.png"/> 
+          </ion-col>
+          <ion-col>
+            {{WeatherData.sunset}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+
+  </ion-card>
+
+   <!--User information message about weather-->
+  <div style="margin-left: 10px">
+    <h1 class="maybe">{{displayMessage}}</h1>
+  </div>
+
+  <div style="margin-left: 10px">
+    <h1 class="maybe">Maybe you should wear:</h1>
+  </div>
+
+   <!--clothing suggestion-->
+  <ion-card *ngFor="let item of suggestionList">
+    <img class="carPic" [src]="item.blobImage">
+    <ion-card-header>
+      <ion-card-title class="cardTitle">{{item.setType}}</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+   <!--refresh button-->
+  <ion-button expand="block" class="refreshButton" (click)="refresh()">
+    <ion-icon name="refresh-outline"></ion-icon>
+    Suggest New Outfit
+  </ion-button>
+
+</ion-content>
+

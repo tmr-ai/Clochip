@@ -1,9 +1,28 @@
 ion-avatar {
-    width: 12vw;
-    height: 12vw;
+    width: 10vw;
+    height: 10vw;
     margin-right: 2vw
 }
 
 ion-card {
     height: 18vh;
+}
+
+.text {
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 40px;
+    position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 80%;
+  padding: 20px;
+  text-align: center;
+}
+
+.picture {
+    filter: blur(2px);
+  -webkit-filter: blur(2px);
 }
