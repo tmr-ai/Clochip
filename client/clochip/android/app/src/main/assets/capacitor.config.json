@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "clochip",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
