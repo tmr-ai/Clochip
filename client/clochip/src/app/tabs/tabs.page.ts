@@ -123,7 +123,7 @@ export class TabsPage {
       this.tag.ndefMessage.length > 0 &&
       this.tag.ndefMessage[0].payload
     ) {
-      alert('Written Tag detected, ID is: ' + JSON.stringify(this.nfc.bytesToString(this.tag.ndefMessage[0].payload)))
+      //alert('Written Tag detected, ID is: ' + JSON.stringify(this.nfc.bytesToString(this.tag.ndefMessage[0].payload)))
       // ask if its dirty or not
       const dirtyOrNotResult = await this.getDirtyOrNot()
 

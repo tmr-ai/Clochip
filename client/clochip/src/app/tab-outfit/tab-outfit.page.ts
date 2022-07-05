@@ -13,8 +13,9 @@ import { Buffer } from 'buffer'
 export class TabOutfitPage implements OnInit{
 
   // weather variables
-  lati: number;           
+  lati: number;
   long: number;
+
   weatherPath: String;    //path to weather icon location
   weatherString: String;  //name of icon
   displayMessage: String; //message shown to user
@@ -52,9 +53,10 @@ export class TabOutfitPage implements OnInit{
     this.getPosition().subscribe(pos => {
       this.lati = pos.coords.latitude
       this.long = pos.coords.longitude
+
       this.getWeatherData(pos.coords.latitude, pos.coords.longitude) //get weatherdata with coordinates
    });
-   
+
    this.loadInventory(); //get inventory
   }
 
@@ -67,7 +69,9 @@ export class TabOutfitPage implements OnInit{
         observer.next(position);
         observer.complete();
       },
-        error => observer.error(error));
+        error => {
+          return observer.error(error);
+        });
     });
   }
 
@@ -75,6 +79,12 @@ export class TabOutfitPage implements OnInit{
 
   //get weather data from api
   getWeatherData(lat, lon) {
+    if(!lat){
+     lat =50.91423478578487
+     lon = 6.942711150569199
+    }
+    else{
+    }
     fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&appid=' + this.API_KEY + '&units=metric')
     .then(response=>response.json())
     .then(data=>{this.setWeatherData(data);})
@@ -111,7 +121,7 @@ export class TabOutfitPage implements OnInit{
     //weather description
     this.WeatherData.general = (this.WeatherData.weather[0].main);
     this.WeatherData.description = (this.WeatherData.weather[0].description);
-    
+
     //call function to set weather icon
     this.defineWeatherAndDay()
   }
@@ -167,15 +177,15 @@ export class TabOutfitPage implements OnInit{
       this.suggestionList.push(this.suggestion(this.filter("3", data))); //pulllover/hoodie
       this.suggestionList.push(this.suggestion(this.filter("4", data))); //long pants
       this.displayMessage = "It's cold out there. Stay warm enough."
-    } 
-    
+    }
+
     else if (this.WeatherData.temp_celcius >= 10 && this.WeatherData.temp_celcius <= 20) {
       this.suggestionList.push(this.suggestion(this.filter("2", data))); //shirt
       this.suggestionList.push(this.suggestion(this.filter("3", data))); //pullover/hoodie
       this.suggestionList.push(this.suggestion(this.filter("4", data))); //long pants
       this.displayMessage = "Temperature seems to be pleasant."
-    } 
-    
+    }
+
     else if (this.WeatherData.temp_celcius > 20) {
       this.suggestionList.push(this.tshirt = this.suggestion(this.filter("1", data))); //tshirt
       this.suggestionList.push(this.shorts = this.suggestion(this.filter("5", data))); //shorts
@@ -252,8 +262,8 @@ export class TabOutfitPage implements OnInit{
 
     this.lstInventory = new Array()
 
-    switch(caseNumber) { 
-      
+    switch(caseNumber) {
+
       // cases for recommending one piece per category depending on weather
       case "1": // t-shirt
         for(let item of data) {
@@ -267,36 +277,36 @@ export class TabOutfitPage implements OnInit{
           if(item.setType == 'Shirt' )
             this.lstInventory .push(item)
         }
-        break;  
+        break;
 
       case "3": // pullover or hoodie
         for(let item of data) {
           if(item.setType == 'Knitwear' || item.setType == 'Hoodie' || item.setType=='Sweatshirt')
           this.lstInventory .push(item)
         }
-        break;    
+        break;
 
       case "4": // long pants
         for(let item of data) {
           if(item.setType == 'Jeans' || item.setType == 'Trousers')
           this.lstInventory .push(item)
         }
-        break;    
-      
+        break;
+
       case "5": // short pants
         for(let item of data) {
           if(item.setType == 'Shorts')
           this.lstInventory .push(item)
         }
-        break;   
-      
+        break;
+
       case "6": // jacket
         for(let item of data){
           this.lstInventory .push(item)
         }
-        break;   
+        break;
 
-      // standard cases giving back pieces belonging to category  
+      // standard cases giving back pieces belonging to category
       case "7": //top
         for(let item of data) {
           if(item.setType == 'T-shirt' || item.setType == 'Knitwear' || item.setType == 'Jacket' || item.setType == 'Hoodie' || item.setType=='Sweatshirt' || item.setType == 'Shirt')
@@ -314,7 +324,7 @@ export class TabOutfitPage implements OnInit{
           if(item.enumWeather == 'Cold')
             this.lstInventory.push(item)
         }
-        break; 
+        break;
       case "10": //warm
         for(let item of data) {
           if(item.enumWeather == 'Warm')

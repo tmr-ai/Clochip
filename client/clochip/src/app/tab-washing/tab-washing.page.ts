@@ -78,7 +78,9 @@ export class TabWashingPage {
 
     this.detectedData = Array.from(this.detectedIds)
 
-    alert('The following Ids were detected:' + JSON.stringify(Array.from(this.detectedIds)))
+    //alert('The following Ids were detected:' + JSON.stringify(Array.from(this.detectedIds)))
+    alert('Scanning was sucessful! Press on RECOMMENDATION to get washing suggestion.')
+
 
     // find parameter to compute the recommendation
     for(let item = 0; item < this.detectedData.length; item ++) {
@@ -102,16 +104,16 @@ export class TabWashingPage {
 
     // white exist and its count is greater than 1 which means white is mixed with colors
     if (colors.includes('white') && Array.from(new Set(colors)).length > 1) {
-      notes = 'Attention: You are mixing white clothes with colored ones, maybe use a color catch cloth<br/>'
+      notes = 'Attention: You are mixing white clothes with colored ones, maybe use a color catch cloth.<br/>'
     }
     // if whool or leather is detected, warn user
     if (materials.includes('Wool') || materials.includes('leather')) {
-      notes += 'Attention: You have an delicate item in your laundry, consider hand washing it'
+      notes += 'Attention: You have an delicate item in your laundry, consider hand washing it.'
     }
 
     // if note is still not set, everything is good
     if (!notes) {
-      notes = 'Looks good, you can start washing'
+      notes = 'Looks good, you can start washing.'
     }
 
     this.recommendationMsg = ` \

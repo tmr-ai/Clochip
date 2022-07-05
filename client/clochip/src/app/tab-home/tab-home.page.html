@@ -1,16 +1,11 @@
 
-<ion-header collapse="condense">
-    <ion-toolbar>
-       
-      </ion-toolbar>
-  
+<ion-header [translucent]="true" class="ion-no-border">
     <ion-toolbar>
         <ion-title size="large">John's Clochip</ion-title>
         <ion-avatar slot="end">
             <img src="assets/images/profilepic.png">
         </ion-avatar>
     </ion-toolbar>
-
     <ion-buttons slot="end"></ion-buttons>
 </ion-header>
 
@@ -30,7 +25,7 @@
         </div>
     </ion-card>
 
-    <ion-card routerLink="/tabs/tab-favorites">
+    <ion-card routerLink="/tabs/tab-outfit">
         <img class="picture" src="assets/images/outfit.jpeg"/>
         <div >
             <h1 class="text"><b>Outfit Assist</b></h1>

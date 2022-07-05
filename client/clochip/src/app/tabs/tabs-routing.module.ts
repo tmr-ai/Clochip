@@ -12,7 +12,7 @@ const routes: Routes = [
         loadChildren: () => import('../tab-washing/tab-washing.module').then(m => m.TabWashingPageModule)
       },
       {
-        path: 'tab-favorites',
+        path: 'tab-outfit',
         loadChildren: () => import('../tab-outfit/tab-outfit.module').then(m => m.TabOutfitPageModule)
       },
       {
