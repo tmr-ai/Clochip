@@ -45,6 +45,7 @@ export class TabDirtyPage implements OnInit {
   loadInventory() {
     this.getItems().subscribe( data => {
       this.lstInventory = data
+      console.log(this.lstInventory)
       this.lstInventorySave = data
       for(let i of this.lstInventory) {
         if(i.blobImage == null) {
@@ -61,7 +62,7 @@ export class TabDirtyPage implements OnInit {
   }
 
   getItems(): Observable<Item[]> {
-    return this.http.get<Item[]>('https://gabler.tech:3000/dirtyByUser?fidUser='+environment.idTestuser)
+    return this.http.get<Item[]>('https://gabler.tech:3000/dirtyByUser/withImage?fidUser='+environment.idTestuser)
   }
 
   sortList() {

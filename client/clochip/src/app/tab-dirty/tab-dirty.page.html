@@ -4,6 +4,8 @@
       <ion-icon name="arrow-back-outline"></ion-icon>
       <ion-label style="margin-left: 5vw">Main Menu</ion-label>
     </ion-button>  
+  </ion-buttons>
+  <ion-buttons slot="end">
     <ion-button (click)="refresh()">
       <ion-icon name="refresh-outline"></ion-icon>
     </ion-button>
@@ -19,7 +21,7 @@
         <ion-row>
           <ion-col size="3" (click)="openModal(item)">
             <ion-avatar>
-              <img [src]="item.blobImage">-
+              <img [src]="item.blobImage">
             </ion-avatar>
           </ion-col>
           <ion-col size="6" (click)="openModal(item)">
