@@ -254,10 +254,10 @@ export class TabsPage {
     this.formInputs.photo.value = await Camera.getPhoto({
       resultType: CameraResultType.Base64,
       source: CameraSource.Camera,
-      quality: 90,
+      quality: 95,
       allowEditing: false,
-      width: 250,
-      height: 250
+      width: 340,
+      height: 340
     });
     this.formInputs.photo.error = false
     this.formInputs.photo.value = `data:image/${this.formInputs.photo.value.format};base64,${this.formInputs.photo.value.base64String}`
