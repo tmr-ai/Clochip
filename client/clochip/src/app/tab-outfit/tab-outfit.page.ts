@@ -19,7 +19,7 @@ export class TabOutfitPage implements OnInit, AfterViewInit{
   weatherPath: String;    //path to weather icon location
   weatherString: String;  //name of icon
   displayMessage: String; //message shown to user
-  API_KEY = 'ff1bc4683fc7325e9c57e586c20cc03e';
+  API_KEY = 'INSERT KEY HERE';
   WeatherData: any;
   // weather variables for location change
   latitude: any;

@@ -51,7 +51,7 @@ const db = mysql.createConnection ({
     host: 'localhost',
     user: 'eeb',
     database: 'eeb',
-    password: 'eeb2022!',
+    password: 'PASSWORD',
     multipleStatements: true
 })
 /**/
